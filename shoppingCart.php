@@ -3,15 +3,24 @@ require_once "DBController.php";
 
 class ShoppingCart extends DBController
 {
-
-    function findAllGames()
+    /**
+     * Returns ALL the `games` in an array 
+     * 
+     * @return $productResult An array of games
+     */
+    function getAllGames()
     {
         $query = "SELECT * FROM games";
         
         $productResult = $this->getDBResult($query);
         return $productResult;
     }
-
+    /**
+     * Returns all the `games` from a `user`'s shopping `cart`
+     * 
+     * @param int $userID   The ID of the owner to the shopping cart
+     * @return $cartResult  An array of games
+     */
     function getUserCart($userID)
     {
         $query = "SELECT games.* FROM games, cart WHERE cart.userID = ? AND games.gameID = cart.gameID ";
@@ -26,30 +35,41 @@ class ShoppingCart extends DBController
         $cartResult = $this->getDBResult($query, $params);
         return $cartResult;
     }
-
-    function getProductByCode($gameCode)
+    /**
+     * Finds a `game` from the `games` list
+     * 
+     * @param int $gameID The ID of the game being searched
+     * @return $cartResult  An array containing the game (could return `null`)
+     */
+    function findGame($gameID)
     {
-        $query = "SELECT * FROM games WHERE code = ?";
+        $query = "SELECT * FROM games WHERE gameID = ?";
         
         $params = array(
             array(
                 "param_type" => "i",
-                "param_value" => $gameCode
+                "param_value" => $gameID
             )
         );
         
         $productResult = $this->getDBResult($query, $params);
         return $productResult;
     }
-
-    function getCartItemByProduct($gameCode, $userID)
+    /**
+     * Finds a `game` from a `user`'s shopping `cart`
+     * 
+     * @param int $gameID The ID of the game being searched
+     * @param int $userID   The ID of the owner to the shopping cart
+     * @return $cartResult  An array containing the game (could return `null`)
+     */
+    function findGameinCart($gameID, $userID)
     {
-        $query = "SELECT * FROM tbl_cart WHERE gameCode = ? AND userID = ?";
+        $query = "SELECT * FROM cart WHERE gameID = ? AND userID = ?";
         
         $params = array(
             array(
                 "param_type" => "i",
-                "param_value" => $gameCode
+                "param_value" => $gameID
             ),
             array(
                 "param_type" => "i",
@@ -61,63 +81,62 @@ class ShoppingCart extends DBController
         return $cartResult;
     }
 
-    function addToCart($cartID, $userID, $gameCode)
+    /**
+     * Adds a `game` into a `user`'s shopping `cart`
+     * 
+     * @param int $userID   The ID of the owner to the shopping cart
+     * @param int $gameID The ID of the game being searched
+     */
+    function addToCart($userID, $gameID)
     {
-        $query = "INSERT INTO cart (cartID, userID, gameCode) VALUES (?, ?, ?)";
+        $query = "INSERT INTO cart (userID, gameID) VALUES (?, ?)";
         
         $params = array(
-            array(
-                "param_type" => "i",
-                "param_value" => $cartID
-            ),
             array(
                 "param_type" => "i",
                 "param_value" => $userID
             ),
             array(
                 "param_type" => "i",
-                "param_value" => $gameCode    
+                "param_value" => $gameID    
             )
         );
         
         $this->updateDB($query, $params);
     }
 
-    function updateCartQuantity($quantity, $cart_id)
+    /**
+     * Removes a `game` from a `user`'s shopping `cart`
+     * 
+     * @param int $userID   The ID of the owner to the shopping cart
+     * @param int $gameID The ID of the game being searched
+     */
+    function deleteCartItem($userID, $gameID)
     {
-        $query = "UPDATE tbl_cart SET  quantity = ? WHERE id= ?";
+        $query = "DELETE FROM tbl_cart WHERE userID = ? AND gameID = ?";
         
         $params = array(
             array(
                 "param_type" => "i",
-                "param_value" => $quantity
+                "param_value" => $userID
             ),
             array(
                 "param_type" => "i",
-                "param_value" => $cart_id
+                "param_value" => $gameID
             )
         );
         
         $this->updateDB($query, $params);
     }
 
-    function deleteCartItem($cart_id)
-    {
-        $query = "DELETE FROM tbl_cart WHERE id = ?";
-        
-        $params = array(
-            array(
-                "param_type" => "i",
-                "param_value" => $cart_id
-            )
-        );
-        
-        $this->updateDB($query, $params);
-    }
-
+    /**
+     * Completely removes all `games` from a `user`'s shopping `cart`
+     * 
+     * @param int $userID   The ID of the owner to the shopping cart
+     */
     function emptyCart($userID)
     {
-        $query = "DELETE FROM tbl_cart WHERE userID = ?";
+        $query = "DELETE FROM cart WHERE userID = ?";
         
         $params = array(
             array(

@@ -1,7 +1,7 @@
 <?php
     session_start();
-    require_once("dbcontroller.php");
-    $db_handle = new DBController();
+    require_once("shoppingCart.php");
+    $db_handle = new ShoppingCart();
 ?>
 
 <!DOCTYPE html>
@@ -15,11 +15,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.0/font/bootstrap-icons.css">
-    <title>E.GG Store</title>
+    <link rel="stylesheet" href="css/universal.css">
+    <title>E.GG</title>
 </head>
 
 <body>
-    This is the template PHP, take note of the CSS and JS CDN links
+    <!-- Header -->
+    <?php include("header.php"); ?>
+
+    This is the boilerplate template file.
+
+    <!-- Footer -->
+    <?php include("footer.php"); ?>
     <!-- Bootstrap JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 </body>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 05, 2021 at 06:07 AM
+-- Generation Time: Nov 07, 2021 at 05:48 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -30,7 +30,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `cart` (
   `userID` int(11) NOT NULL,
-  `gameID` int(11) NOT NULL
+  `gameID` int(11) NOT NULL,
+  PRIMARY KEY (`userID`,`gameID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -41,8 +42,16 @@ CREATE TABLE `cart` (
 
 CREATE TABLE `developer` (
   `userID` int(11) NOT NULL,
-  `revenue` double NOT NULL
+  `revenue` double NOT NULL,
+  PRIMARY KEY (`userID`,`revenue`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `developer`
+--
+
+INSERT INTO `developer` (`userID`, `revenue`) VALUES
+(1, 6900.6);
 
 -- --------------------------------------------------------
 
@@ -52,7 +61,8 @@ CREATE TABLE `developer` (
 
 CREATE TABLE `gamer` (
   `userID` int(11) NOT NULL,
-  `currency` int(11) NOT NULL
+  `currency` int(11) NOT NULL,
+  PRIMARY KEY (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -69,8 +79,16 @@ CREATE TABLE `games` (
   `price` double NOT NULL,
   `image` varchar(255) NOT NULL,
   `requirements` text NOT NULL,
-  `developerID` int(11) NOT NULL
+  `developerID` int(11) NOT NULL,
+  PRIMARY KEY (`gameID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `games`
+--
+
+INSERT INTO `games` (`gameID`, `name`, `description`, `ageRating`, `price`, `image`, `requirements`, `developerID`) VALUES
+(1, 'Test', 'Test Description', 'R18', 69.69, 'resources/test.png', 'Minimum requirements:\r\n8GB RAM\r\ni5 XXX\r\n\r\nRecommended Requirements:\r\n16GB RAM\r\ni9 XXX', 1);
 
 -- --------------------------------------------------------
 
@@ -80,7 +98,8 @@ CREATE TABLE `games` (
 
 CREATE TABLE `library` (
   `userID` int(11) NOT NULL,
-  `gameID` int(11) NOT NULL
+  `gameID` int(11) NOT NULL,
+  PRIMARY KEY (`userID`,`gameID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -94,42 +113,52 @@ CREATE TABLE `user` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `name` varchar(30) NOT NULL,
-  `userType` int(11) NOT NULL
+  `userType` enum('Gamer','Developer','Admin') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Indexes for dumped tables
+-- Dumping data for table `user`
 --
 
---
--- Indexes for table `games`
---
-ALTER TABLE `games`
-  ADD PRIMARY KEY (`gameID`);
-
---
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`userID`);
-
---
--- AUTO_INCREMENT for dumped tables
---
+INSERT INTO `user` (`userID`, `email`, `password`, `name`, `userType`) VALUES
+(1, 'testdev@dev.com', '123', 'Test Developer', 'Developer');
 
 --
 -- AUTO_INCREMENT for table `games`
 --
 ALTER TABLE `games`
-  MODIFY `gameID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `gameID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+--
+-- Constraints for table `cart`
+--
+ALTER TABLE `cart`
+  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
+  ADD CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`gameID`) REFERENCES `games` (`gameID`);
+
+--
+-- Constraints for table `developer`
+--
+ALTER TABLE `developer`
+  ADD CONSTRAINT `developer_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);
+
+--
+-- Constraints for table `gamer`
+--
+ALTER TABLE `gamer`
+  ADD CONSTRAINT `gamer_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);
+
+--
+-- Constraints for table `library`
+--
+ALTER TABLE `library`
+  ADD CONSTRAINT `library_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
+  ADD CONSTRAINT `library_ibfk_2` FOREIGN KEY (`gameID`) REFERENCES `games` (`gameID`);
+COMMIT;
