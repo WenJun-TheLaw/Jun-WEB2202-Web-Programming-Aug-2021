@@ -6,14 +6,14 @@ class ShoppingCart extends DBController
     /**
      * Returns ALL the `games` in an array 
      * 
-     * @return $productResult An array of games
+     * @return $gameResult An array of games
      */
     function getAllGames()
     {
         $query = "SELECT * FROM games";
-        
-        $productResult = $this->getDBResult($query);
-        return $productResult;
+
+        $gameResult = $this->getDBResult($query);
+        return $gameResult;
     }
     /**
      * Returns all the `games` from a `user`'s shopping `cart`
@@ -38,7 +38,7 @@ class ShoppingCart extends DBController
     /**
      * Finds a `game` from the `games` list
      * 
-     * @param int $gameID The ID of the game being searched
+     * @param int $gameID   The ID of the game being searched
      * @return $gameResult  An array containing the game (could return `null`)
      */
     function findGame($gameID)

@@ -23,6 +23,13 @@ $db_handle = new ShoppingCart();
 <body>
     <!-- Header -->
     <?php include("header.php"); ?>
+
+    <?php
+    // Get all games from the game table
+    $games_info = $db_handle->getAllGames();
+    $counter = 0;
+    ?>
+
     <div class="container-fluid">
         <!-- New Releases Title -->
         <div class="row mt-4">
@@ -32,30 +39,22 @@ $db_handle = new ShoppingCart();
         </div>
         <!-- New Releases Game Row -->
         <div class="row mt-4 d-flex justify-content-center">
-            <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
-                <a href="game.php?id=1">
-                    <img src="https://via.placeholder.com/400" alt="image of a game" class="game_img">
-                    <div class="game_name">LOREM</div>
-                </a>
-            </div>
-            <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
-                <a href="game.php?id=2">
-                    <img src="https://via.placeholder.com/400" alt="image of a game" class="game_img">
-                    <div class="game_name">IPSUM</div>
-                </a>
-            </div>
-            <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
-                <a href="game.php?id=3">
-                    <img src="https://via.placeholder.com/400" alt="image of a game" class="game_img">
-                    <div class="game_name">DOLOR</div>
-                </a>
-            </div>
-            <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
-                <a href="game.php?id=4">
-                    <img src="https://via.placeholder.com/400" alt="image of a game" class="game_img">
-                    <div class="game_name">SIT EMET</div>
-                </a>
-            </div>
+            <?php
+            for ($counter = 1; $counter < 5; $counter++) {
+                $img = $games_info[$counter]["image"];
+                $name = $games_info[$counter]["name"];
+                $id = $counter + 1;
+                print('
+                    <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
+                        <a href="game.php?id=' . $id . '">
+                            <img src="' . $img . '" alt="image of a game" class="game_img">
+                            <div class="game_name">' . $name . '</div>
+                        </a>
+                    </div>
+                    ');
+                $total_games_displayed++;
+            }
+            ?>
         </div>
         <!-- Top Sellers Title-->
         <div class="row mt-4">
@@ -65,30 +64,22 @@ $db_handle = new ShoppingCart();
         </div>
         <!-- Top Sellers Game Row -->
         <div class="row mt-4 d-flex justify-content-center">
-            <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
-                <a href="game.php?id=5">
-                    <img src="https://via.placeholder.com/400" alt="image of a game" class="game_img">
-                    <div class="game_name">LOREM 5</div>
-                </a>
-            </div>
-            <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
-                <a href="game.php?id=6">
-                    <img src="https://via.placeholder.com/400" alt="image of a game" class="game_img">
-                    <div class="game_name">IPSUM 6</div>
-                </a>
-            </div>
-            <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
-                <a href="game.php?id=7">
-                    <img src="https://via.placeholder.com/400" alt="image of a game" class="game_img">
-                    <div class="game_name">DOLOR 7</div>
-                </a>
-            </div>
-            <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
-                <a href="game.php?id=8">
-                    <img src="https://via.placeholder.com/400" alt="image of a game" class="game_img">
-                    <div class="game_name">SIT EMET 8</div>
-                </a>
-            </div>
+            <?php
+                for ($counter = 5; $counter < 9; $counter++) {
+                    $img = $games_info[$counter]["image"];
+                    $name = $games_info[$counter]["name"];
+                    $id = $counter + 1;
+                    print('
+                        <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
+                            <a href="game.php?id=' . $id . '">
+                                <img src="' . $img . '" alt="image of a game" class="game_img">
+                                <div class="game_name">' . $name . '</div>
+                            </a>
+                        </div>
+                        ');
+                    $total_games_displayed++;
+                }
+            ?>
         </div>
     </div>
 
