@@ -39,7 +39,7 @@ class ShoppingCart extends DBController
      * Finds a `game` from the `games` list
      * 
      * @param int $gameID The ID of the game being searched
-     * @return $cartResult  An array containing the game (could return `null`)
+     * @return $gameResult  An array containing the game (could return `null`)
      */
     function findGame($gameID)
     {
@@ -51,9 +51,29 @@ class ShoppingCart extends DBController
                 "param_value" => $gameID
             )
         );
-        
-        $productResult = $this->getDBResult($query, $params);
-        return $productResult;
+
+        $gameResult = $this->getDBResult($query, $params);
+        return $gameResult;
+    }
+    /**
+     * Finds a `user` from the `user` list
+     * 
+     * @param int $userID   The ID of the user being searched
+     * @return $userResult  An array containing the game (could return `null`)
+     */
+    function findUser($userID)
+    {
+        $query = "SELECT * FROM user WHERE userID = ?";
+
+        $params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $userID
+            )
+        );
+
+        $userResult = $this->getDBResult($query, $params);
+        return $userResult;
     }
     /**
      * Finds a `game` from a `user`'s shopping `cart`

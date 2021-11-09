@@ -23,81 +23,98 @@ $db_handle = new ShoppingCart();
 <body>
     <!-- Header -->
     <?php include("header.php"); ?>
-    <?php 
-        if(!empty($_GET["id"])){
-            $game_id = $_GET["id"];
-        }
-        else{
+    <?php
+    // Check that URL has id
+    if (!empty($_GET["id"])) {
+        $game_id = (int)$_GET["id"];
+
+        // Check if the id exists in the game table
+        $game_info = $db_handle->findGame($game_id);
+        if ($game_id == $game_info[0]["gameID"]) {
+
+    ?>
+            <!-- Game Title -->
+            <div class="game_name h1" id=game_name><?php echo $game_info[0]["name"]; ?></div>
+
+            <!-- Game Body Div -->
+            <div class="d-flex game_content_flexbox">
+                <!-- Left Div (30vw) -->
+                <div class="d-flex text-center flex-column game_left_content">
+                    <!-- Game Image -->
+                    <img src=<?php echo $game_info[0]["image"]; ?> alt="An image of the game" class="game_img" id="game_img">
+                    <div class="textbox mt-4">
+                        <!-- Game Price -->
+                        <div class="d-inline-flex">
+                            <div class="game_text_large">RM&nbsp;</div>
+                            <div class="game_text_large" id=game_price><?php echo number_format($game_info[0]["price"], 2); ?></div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Right Div (70vw) -->
+                <div class="d-flex flex-column game_right_content">
+                    <!-- Game Description -->
+                    <div class="game_text_small" id="game_description"> <?php echo $game_info[0]["description"]; ?> </div>
+                    <div class="game_bottom_right">
+                        <!-- First row (Developer & Age Rating) -->
+                        <div class="row  mt-4">
+                            <!-- Game Description -->
+                            <div class="col">
+                                <div class="d-flex flex-column">
+                                    <div class="game_text_medium">Developer&colon;&nbsp;</div>
+                                    <div class="game_text_medium" id=game_developer>
+                                        <?php
+                                        $developerID = $game_info[0]["developerID"];
+                                        $developer_info = $db_handle->findUser($developerID);
+                                        echo $developer_info[0]["name"];
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Game Age Rating -->
+                            <div class="col">
+                                <div class="d-flex flex-column">
+                                    <div class="game_text_medium">Age Rating&colon;&nbsp;</div>
+                                    <div class="game_text_medium" id=game_age_rating><?php echo $game_info[0]["ageRating"]; ?></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Second row (Min & Recommended Requirements) -->
+                        <div class="row">
+                            <!-- Game Min Requirements -->
+                            <div class="col-md mt-4">
+                                <div class="d-flex flex-column">
+                                    <div class="game_text_medium">Minimum Requirements&colon;&nbsp;</div>
+                                    <div id="game_min_req"><?php echo $game_info[0]["min_requirements"]; ?></div>
+                                </div>
+                            </div>
+                            <!-- Game Recommended Requirements -->
+                            <div class="col-md mt-4">
+                                <div class="d-flex flex-column">
+                                    <div class="game_text_medium">Recommended Requirements&colon;&nbsp;</div>
+                                    <div id="game_rec_req"><?php echo $game_info[0]["rec_requirements"]; ?></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <?php
+        } else {
             $error = "Game ID not found!";
             echo "<script type='text/javascript'>
+                alert('$error');
+                window.location.href='index.php';
+                </script>";
+        }
+    } else {
+        $error = "Game ID not found!";
+        echo "<script type='text/javascript'>
             alert('$error');
             window.location.href='index.php';
             </script>";
-        }
-    ?>
-    <!-- Game Title -->
-    <div class="game_name h1" id=game_name>If you see this, the page failed to load... :c</div>
-
-    <!-- Game Body Div -->
-    <div class="d-flex game_content_flexbox">
-        <!-- Left Div (30vw) -->
-        <div class="d-flex text-center flex-column game_left_content">
-            <!-- Game Image -->
-            <img src="https://via.placeholder.com/400" alt="Picture of the game" class="game_img" id="game_img">
-            <div class="textbox mt-4">
-                <!-- Game Price -->
-                <div class="d-inline-flex">
-                    <div class="game_text_large">RM&nbsp;</div>
-                    <div class="game_text_large" id=game_price>00.00</div>
-                </div>
-            </div>
-
-        </div>
-        <!-- Right Div (70vw) -->
-        <div class="d-flex flex-column game_right_content">
-            <!-- Game Description -->
-            <div class="game_text_small" id="game_description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt vel facilis, assumenda quibusdam accusantium quos pariatur quaerat, obcaecati porro repellendus repudiandae aut. Sapiente officiis omnis at. Maiores aspernatur tenetur ducimus.
-            </div>
-            <div class="game_bottom_right">
-                <!-- First row (Developer & Age Rating) -->
-                <div class="row  mt-4">
-                    <!-- Game Description -->
-                    <div class="col">
-                        <div class="d-flex flex-column">
-                            <div class="game_text_medium">Developer&colon;&nbsp;</div>
-                            <div class="game_text_medium" id=game_developer>Test Developer</div>
-                        </div>
-                    </div>
-                    <!-- Game Age Rating -->
-                    <div class="col">
-                        <div class="d-flex flex-column">
-                            <div class="game_text_medium">Age Rating&colon;&nbsp;</div>
-                            <div class="game_text_medium" id=game_age_rating>PEGI 3</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Second row (Min & Recommended Requirements) -->
-                <div class="row  mt-4">
-                    <!-- Game Min Requirements -->
-                    <div class="col">
-                        <div class="d-flex flex-column">
-                            <div class="game_text_medium">Minimum Requirements&colon;&nbsp;</div>
-                            <div class="game_text_medium" id=game_developer>Test Minimum Requirements</div>
-                        </div>
-                    </div>
-                    <!-- Game Recommended Requirements -->
-                    <div class="col">
-                        <div class="d-flex flex-column">
-                            <div class="game_text_medium">Recommended Requirements&colon;&nbsp;</div>
-                            <div class="game_text_medium" id=game_age_rating>Test Recommended Requirements</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    } ?>
 
     <!-- Footer -->
     <?php include("footer.php"); ?>
