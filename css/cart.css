@@ -13,6 +13,16 @@ body{
     margin: 3vh 0;
 }
 
+.cart_body{
+    width: 100%;
+}
+
+.cart_item{
+    width: 100%;
+    margin: 5vh 10vw;
+    outline: 5px solid white;
+}
+
 a,
 a:link,
 a:visited,

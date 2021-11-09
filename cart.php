@@ -10,8 +10,8 @@ function expireSessionKeys()
     }
 }
 expireSessionKeys();
-require_once("dbcontroller.php");
-$db_handle = new DBController();
+require_once("shoppingCart.php");
+$db_handle = new ShoppingCart();
 ?>
 
 <!DOCTYPE html>
@@ -31,25 +31,40 @@ $db_handle = new DBController();
 </head>
 
 <body>
-    <?php 
-        //If user not logged in
-        if(!isset($_SESSION["userID"])){
-
-        }
-        else{
-
-        }
+    <?php
+    //If user not logged in
+    if (!isset($_SESSION["userID"])) {
+        $error = "You are not logged in! Please log in first.";
+        echo "<script type='text/javascript'>
+                    alert('$error');
+                    window.location.href='login.php';
+                    </script>";
+    }
+    //Display the cart
+    else {
+        $cart = $db_handle->getUserCart($_SESSION['userID']);
     ?>
+        <!-- Header -->
+        <?php include("header.php"); ?>
 
-    <!-- Header -->
-    <?php include("header.php"); ?>
+        <div class="h1 title text-center">SHOPPING CART</div>
 
-    <div class="h1 title text-center">SHOPPING CART</div>
+        <!-- ?php
+        foreach ($cart as $key => $value) {
+        }
+        ?> -->
 
-    <!-- Footer -->
-    <?php include("footer.php"); ?>
-    <!-- Bootstrap JS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+        <div class="d-flex cart_body">
+            <div class="cart_item">
+                <!-- TODO: img, name, price-->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <?php include("footer.php"); ?>
+        <!-- Bootstrap JS CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    <?php } ?>
 </body>
 
 </html>
