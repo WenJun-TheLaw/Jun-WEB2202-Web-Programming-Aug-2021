@@ -56,12 +56,12 @@ class ShoppingCart extends DBController
         return $gameResult;
     }
     /**
-     * Finds a `user` from the `user` list
+     * Finds a `user` from the `user` list with ID
      * 
      * @param int $userID   The ID of the user being searched
-     * @return $userResult  An array containing the game (could return `null`)
+     * @return $userResult  An array containing the user (could return `null`)
      */
-    function findUser($userID)
+    function findUserByID($userID)
     {
         $query = "SELECT * FROM user WHERE userID = ?";
 
@@ -69,6 +69,26 @@ class ShoppingCart extends DBController
             array(
                 "param_type" => "i",
                 "param_value" => $userID
+            )
+        );
+
+        $userResult = $this->getDBResult($query, $params);
+        return $userResult;
+    }
+    /**
+     * Finds a `user` from the `user` list with email
+     * 
+     * @param   string $userEmail       The email of the user being searched
+     * @return  array|null $userResult  An array containing the user (could return `null`)
+     */
+    function findUserByEmail($userEmail)
+    {
+        $query = "SELECT * FROM user WHERE email = ?";
+
+        $params = array(
+            array(
+                "param_type" => "s",
+                "param_value" => $userEmail
             )
         );
 
@@ -166,5 +186,129 @@ class ShoppingCart extends DBController
         );
         
         $this->updateDB($query, $params);
+    }
+    /**
+     * Adds a new `user` into the `user` table
+     * 
+     * @param string $email     The email of the user
+     * @param string $password  The password (hashed) of the user
+     * @param string $name      The name of the user
+     * @param string $type      The type of the user: Gamer/ Developer/ Admin
+     * @return bool  $success   Whether the operation was successful
+     */
+    private function addUser($email, $password, $name, $type)
+    {
+        //Check if user exists already
+        $registered = $this->findUserByEmail($email);
+        //User does not exist
+        if(is_null($registered)){
+            $query = "INSERT INTO user (email, password, name, userType)
+                VALUES (?, ?, ?, ?)";
+
+            $params = array(
+                array(
+                    "param_type" => "s",
+                    "param_value" => $email
+                ),
+                array(
+                    "param_type" => "s",
+                    "param_value" => $password,
+                ),
+                array(
+                    "param_type" => "s",
+                    "param_value" => $name,
+                ),
+                array(
+                    "param_type" => "s",
+                    "param_value" => $type
+                )
+            );
+
+            $this->updateDB($query, $params);
+            return true;
+        }
+        else{
+            return false;
+        }
+       
+    }
+    /**
+     * Adds a new `gamer` into the `user` and `gamer` table 
+     * 
+     * @param string $email     The email of the gamer
+     * @param string $password  The password (hashed) of the gamer
+     * @param string $name      The name of the gamer
+     * @return bool  $success   Whether the operation was successful
+     */
+    function addGamer($email, $password, $name)
+    {
+        //Add into `user` table first
+        if ($this->addUser($email, $password, $name, 'Gamer')){
+            //Get ID of the new user
+            $user = $this->findUserByEmail($email);
+            $userID = $user[0]['userID'];
+
+            $query = "INSERT INTO gamer (userID, currency)
+                VALUES (?, ?)";
+
+            $params = array(
+                array(
+                    "param_type" => "s",
+                    "param_value" => $userID,
+                ),
+                array(
+                    "param_type" => "i",
+                    "param_value" => 0
+                )
+            );
+
+            $this->updateDB($query, $params);
+            return true;
+        }
+        //Add user operation failed
+        else{
+            return false;
+        }
+
+       
+    }
+    /**
+     * Adds a new `developer` into the `user` and `developer` table 
+     * 
+     * @param string $email         The email of the developer
+     * @param string $password      The password (hashed) of the developer
+     * @param string $name          The name of the developer
+     * @param string $companySSN    The SSN of the developer's company
+     * @return bool  $success       Whether the operation was successful
+     */
+    function addDeveloper($email, $password, $name, $companySSN)
+    {
+        //Add into `user` table first
+        if($this->addUser($email, $password, $name, 'Developer')){
+            //Get ID of the new user
+            $user = $this->findUserByEmail($email);
+            $developerID = $user[0]['userID'];
+
+            //Default to 0 revenue and unverified (0)
+            $query = "INSERT INTO developer (developerID, revenue, verified, companySSN)
+                    VALUES (?, 0, 0, ?)";
+
+            $params = array(
+                array(
+                    "param_type" => "s",
+                    "param_value" => $developerID,
+                ),
+                array(
+                    "param_type" => "s",
+                    "param_value" => $companySSN
+                )
+            );
+
+            $this->updateDB($query, $params);
+        }
+        //Add user operation failed
+        else{
+            return false;
+        }
     }
 }

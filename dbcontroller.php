@@ -10,7 +10,31 @@ class DBController
 
 	function __construct()
 	{
+		//Connecting to DB
 		$this->conn = mysqli_connect($this->host, $this->user, $this->password, $this->database);
+		
+		//IF DB Connection fails (Most probably DB is not created yet)
+		if(!$this->conn){
+			//Connecting to MYSQLi
+			$this->conn = mysqli_connect($this->host, $this->user, $this->password);
+
+			//Create DB
+			$query = 'CREATE DATABASE egg';
+			mysqli_query($this->conn, $query);
+
+			//Selecting DB
+			mysqli_select_db($this->conn,$this->database);
+				
+			//SQL Source file
+			$sqlSource = file_get_contents('egg_with_data.sql');
+			mysqli_multi_query($this->conn, $sqlSource);
+
+			$msg = "Database not found, but we created it for you!";
+			echo "<script type='text/javascript'>
+            alert('$msg');
+            window.location.href='index.php';
+            </script>";
+		}
 	}
 
 	function getDBResult($query, $params = array())

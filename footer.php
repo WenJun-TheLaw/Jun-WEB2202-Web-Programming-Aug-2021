@@ -63,7 +63,7 @@
                     <a href="index.php" class="footer_links">Home</a>
                 </li>
                 <li class="bottom_border">
-                    <a href="developer.php" class="footer_links">Developers</a>
+                    <a href="dev_registration.php" class="footer_links">Developers</a>
                 </li>
                 <li>
                     <a href="#" class="footer_links" id="contact_link">Contact</a>

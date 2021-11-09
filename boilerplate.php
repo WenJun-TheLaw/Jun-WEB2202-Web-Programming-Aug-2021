@@ -1,5 +1,15 @@
 <?php
-    session_start();
+    if (!isset($_SESSION)) session_start();
+    //Check which session variables to expire
+    function expireSessionKeys()
+    {
+        foreach ($_SESSION["expiries"] as $key => $value) {
+            if (time() > $value) {
+                unset($_SESSION[$key]);
+            }
+        }
+    }
+    expireSessionKeys();
     require_once("shoppingCart.php");
     $db_handle = new ShoppingCart();
 ?>
