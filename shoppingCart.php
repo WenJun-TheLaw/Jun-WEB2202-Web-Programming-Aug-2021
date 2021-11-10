@@ -98,11 +98,11 @@ class ShoppingCart extends DBController
     /**
      * Finds a `game` from a `user`'s shopping `cart`
      * 
-     * @param int $gameID The ID of the game being searched
      * @param int $userID   The ID of the owner to the shopping cart
+     * @param int $gameID   The ID of the game being searched
      * @return $cartResult  An array containing the game (could return `null`)
      */
-    function findGameinCart($gameID, $userID)
+    private function findGameinCart($userID, $gameID)
     {
         $query = "SELECT * FROM cart WHERE gameID = ? AND userID = ?";
         
@@ -148,25 +148,35 @@ class ShoppingCart extends DBController
     /**
      * Removes a `game` from a `user`'s shopping `cart`
      * 
-     * @param int $userID   The ID of the owner to the shopping cart
-     * @param int $gameID The ID of the game being searched
+     * @param int $userID       The ID of the owner to the shopping cart
+     * @param int $gameID       The ID of the game being searched
+     * 
+     * @return bool $success    Whether the operation was successful
      */
     function deleteCartItem($userID, $gameID)
     {
-        $query = "DELETE FROM tbl_cart WHERE userID = ? AND gameID = ?";
+        $gameExists = $this->findGameInCart($userID, $gameID);
+        if(!is_null($gameExists)){
+            $query = "DELETE FROM tbl_cart WHERE userID = ? AND gameID = ?";
+
+            $params = array(
+                array(
+                    "param_type" => "i",
+                    "param_value" => $userID
+                ),
+                array(
+                    "param_type" => "i",
+                    "param_value" => $gameID
+                )
+            );
+
+            $this->updateDB($query, $params);
+            return true;
+        }
+        else{
+            return false;
+        }
         
-        $params = array(
-            array(
-                "param_type" => "i",
-                "param_value" => $userID
-            ),
-            array(
-                "param_type" => "i",
-                "param_value" => $gameID
-            )
-        );
-        
-        $this->updateDB($query, $params);
     }
 
     /**

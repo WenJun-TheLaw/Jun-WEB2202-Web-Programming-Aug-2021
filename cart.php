@@ -42,21 +42,84 @@ $db_handle = new ShoppingCart();
     }
     //Display the cart
     else {
+        //Checking for $_POST action
+        if (!empty($_POST["action"])) {
+            switch ($_POST["action"]) {
+                case "delete":
+                    if(!empty($_POST["gameID"])){
+                        $userCart = $db_handle->deleteCartItem($_SESSION["userID"], $_POST["gameID"]);
+                    }
+                   
+                    break;
+                case "empty":
+                    break;
+
+                    unset($_POST["action"]);
+                    header("Refresh:0");
+            }
+        }
+
+        //Display the cart
         $cart = $db_handle->getUserCart($_SESSION['userID']);
+        $user = $db_handle->findUserByID($_SESSION["userID"]);
     ?>
         <!-- Header -->
         <?php include("header.php"); ?>
 
-        <div class="h1 title text-center">SHOPPING CART</div>
+        <div class="h1 title text-center"><?php echo $user[0]["name"]; ?>&apos;s Cart</div>
+        <div class="container-fluid">
+            <div class="d-flex flex-column cart_body">
 
-        <!-- ?php
-        foreach ($cart as $key => $value) {
-        }
-        ?> -->
 
-        <div class="d-flex cart_body">
-            <div class="cart_item">
-                <!-- TODO: img, name, price-->
+
+                <!-- Display cart items -->
+                <?php
+                //If not empty
+                if (!is_null($cart)) {
+                    foreach ($cart as $key => $value) {
+                        $img    = $cart[$key]["image"];
+                        $name   = $cart[$key]["name"];
+                        $price  = number_format($cart[$key]["price"], 2);
+                        $id     = $cart[$key]["gameID"];
+                        echo <<<_END
+                      
+                        <!-- Each idividual Cart Item -->
+                        <div class="d-flex cart_item p-4">
+                            <!-- Image -->
+                            <img src="$img" class="cart_image" alt="Image of cart item">
+
+                            <!-- Name -->
+                            <div class="cart_item_mid_col d-flex flex-column align-items-center ms-4">
+                                <div class="cart_text_medium cart_links" id=cart_name>$name</div>
+                            </div>
+                            <!-- Controls & Price -->
+                            <div class="cart_item_right_col d-flex flex-column justify-content-center align-items-center ms-auto">
+                                <!-- Price Text -->
+                                <div class="d-flex">
+                                    <div class="cart_text_medium">Price&colon;&nbsp;</div>
+                                    <div class="cart_text_medium">RM&nbsp;</div>
+                                    <div class="cart_text_medium" id=cart_price>$price</div>
+                                </div>
+                                <!-- Delete Button -->
+                                <div class="cart_delete d-flex justify-content-center mt-2">
+                                    <form action="cart.php" method="POST">
+                                        <input type="hidden" name="action" value="remove">
+                                        <input type="hidden" name="gameID" value="$id">
+                                        <button type="submit" class="cart_invi_button">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    
+_END;
+                    }
+                } else {
+                    echo <<<_END
+                    <div class="h2 title text-center">Your cart is empty!</div>
+_END;
+                } ?>
             </div>
         </div>
 

@@ -73,7 +73,7 @@ $db_handle = new ShoppingCart();
                 if(password_verify($password, $password_hashed)){
                     //Setting session userID and expiry, then redirect user
                     $_SESSION['userID'] = $user_result[0]['userID'];
-                    $_SESSION['expiries']['userID'] = time() + 5*60; //5 mins expiry
+                    $_SESSION['expiries']['userID'] = time() + 50*60; //50 mins expiry
                     $log = "Logged in successfully! Bringing you to the store.";
                     echo "<script type='text/javascript'>
                                 alert('$log');

@@ -13,14 +13,28 @@ body{
     margin: 3vh 0;
 }
 
-.cart_body{
-    width: 100%;
+.cart_item{
+    margin: 5vh 10vw;
+    background-color: #435055;
+    border-radius: 25px;
 }
 
-.cart_item{
-    width: 100%;
-    margin: 5vh 10vw;
-    outline: 5px solid white;
+.cart_text_small{
+    color: #A3F7BF;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 1.25em;
+}
+
+.cart_text_medium{
+    color: #A3F7BF;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 1.5em;
+}
+
+.cart_text_large{
+    color: #A3F7BF;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 1.7em;
 }
 
 a,
@@ -41,12 +55,47 @@ a:active{
     color: #29A19C;
 }
 
+.cart_invi_button{
+    background: transparent no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    box-shadow: none;
+    -webkit-box-shadow: none; 
+    -moz-box-shadow: none;
+}
+
+.bi-trash{
+    font-size: 2em;
+    color: white;
+}
+
+.bi-trash:hover{
+    color: #e62727;
+}
+
+.cart_item_right_col{
+    width: fit-content;
+}
+
+
 /*If screen width >768px, same as md on Bootstrap 5*/
 @media (min-width: 768px){
-   
+   .cart_image{
+        height: 200px;
+        width: 200px;
+        border-radius: 25px;
+        object-fit:cover;
+    }
 }
 
 /*If screen width <768px, same as md on Bootstrap 5*/
 @media (max-width: 768px){
-   
+    .cart_image{
+        height: 150px;
+        width: 150px;
+        border-radius: 25px;
+        object-fit: cover;
+    }
 }
