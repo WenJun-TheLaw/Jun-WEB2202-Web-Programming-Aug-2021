@@ -102,7 +102,7 @@ class ShoppingCart extends DBController
      * @param int $gameID   The ID of the game being searched
      * @return $cartResult  An array containing the game (could return `null`)
      */
-    private function findGameinCart($userID, $gameID)
+    function findGameinCart($userID, $gameID)
     {
         $query = "SELECT * FROM cart WHERE gameID = ? AND userID = ?";
         
@@ -157,7 +157,7 @@ class ShoppingCart extends DBController
     {
         $gameExists = $this->findGameInCart($userID, $gameID);
         if(!is_null($gameExists)){
-            $query = "DELETE FROM tbl_cart WHERE userID = ? AND gameID = ?";
+            $query = "DELETE FROM cart WHERE userID = ? AND gameID = ?";
 
             $params = array(
                 array(

@@ -42,10 +42,6 @@ $db_handle = new ShoppingCart();
 
     //Salting passwords
     $password_hashed = password_hash($password, PASSWORD_DEFAULT);
-    //Verifying passwords
-    if (password_verify($password, $password_hashed)) {
-        // echo 'ok';
-    }
 
     //Checking if the user is already logged in
     if (isset($_SESSION['userID'])) {

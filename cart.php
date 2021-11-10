@@ -47,14 +47,18 @@ $db_handle = new ShoppingCart();
             switch ($_POST["action"]) {
                 case "delete":
                     if(!empty($_POST["gameID"])){
-                        $userCart = $db_handle->deleteCartItem($_SESSION["userID"], $_POST["gameID"]);
-                    }
-                   
+                        $deleteSuccess = $db_handle->deleteCartItem($_SESSION["userID"], $_POST["gameID"]);
+                        $msg = $deleteSuccess ? "Game removed." : "Operation unsuccessful.";
+                        echo "<script type='text/javascript'>
+                            alert('$msg');
+                            </script>";
+                    }                   
                     break;
                 case "empty":
                     break;
 
                     unset($_POST["action"]);
+                    unset($_POST["gameID"]);
                     header("Refresh:0");
             }
         }
@@ -69,8 +73,6 @@ $db_handle = new ShoppingCart();
         <div class="h1 title text-center"><?php echo $user[0]["name"]; ?>&apos;s Cart</div>
         <div class="container-fluid">
             <div class="d-flex flex-column cart_body">
-
-
 
                 <!-- Display cart items -->
                 <?php
@@ -103,7 +105,7 @@ $db_handle = new ShoppingCart();
                                 <!-- Delete Button -->
                                 <div class="cart_delete d-flex justify-content-center mt-2">
                                     <form action="cart.php" method="POST">
-                                        <input type="hidden" name="action" value="remove">
+                                        <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="gameID" value="$id">
                                         <button type="submit" class="cart_invi_button">
                                             <i class="bi bi-trash"></i>
