@@ -1,7 +1,21 @@
 <?php
-if (!isset($_SESSION)) session_start();
-require_once("shoppingCart.php");
-$db_handle = new ShoppingCart();
+    if (session_status() != PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+    //Check which session variables to expire
+    function expireSessionKeys()
+    {
+        if (!is_null($_SESSION["expiries"])) {
+            foreach ($_SESSION["expiries"] as $key => $value) {
+                if (time() > $value) {
+                    unset($_SESSION[$key]);
+                }
+            }
+        }
+    }
+    expireSessionKeys();
+    require_once("shoppingCart.php");
+    $db_handle = new ShoppingCart();
 ?>
 
 <!DOCTYPE html>

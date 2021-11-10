@@ -122,27 +122,49 @@ class ShoppingCart extends DBController
     }
 
     /**
-     * Adds a `game` into a `user`'s shopping `cart`
+     * Adds a `game` into a `user`'s shopping `cart`. Checks if:
+     * 1. the user exist
+     * 2. the game exists
+     * 3. the user is of type "Gamer" 
+     * 4. whether the game is already in the cart
+     *
      * 
-     * @param int $userID   The ID of the owner to the shopping cart
-     * @param int $gameID The ID of the game being searched
+     * @param int $userID       The ID of the owner to the shopping cart
+     * @param int $gameID       The ID of the game being searched
+     * 
+     * @return bool $success    Whether the operation was successful
      */
     function addToCart($userID, $gameID)
     {
-        $query = "INSERT INTO cart (userID, gameID) VALUES (?, ?)";
-        
-        $params = array(
-            array(
-                "param_type" => "i",
-                "param_value" => $userID
-            ),
-            array(
-                "param_type" => "i",
-                "param_value" => $gameID    
-            )
-        );
-        
-        $this->updateDB($query, $params);
+        $user = $this->findUserByID($userID);
+        $userExists = !is_null($user);
+        $gameExists = !is_null($this->findGame($gameID));
+        if(!is_null($user)){
+            $userIsGamer = strcasecmp($user[0]["userType"], "Gamer") == 0;
+        }
+        $gameInCart = is_null($this->findGameinCart($userID, $gameID));
+        //ONLY IF ALL: user exists, game exists, user is a "Gamer" and game is not already in cart
+        if($userExists && $gameExists && $userIsGamer && $gameInCart){
+            $query = "INSERT INTO cart (userID, gameID) VALUES (?, ?)";
+
+            $params = array(
+                array(
+                    "param_type" => "i",
+                    "param_value" => $userID
+                ),
+                array(
+                    "param_type" => "i",
+                    "param_value" => $gameID
+                )
+            );
+
+            $this->updateDB($query, $params);
+            return true;
+        }
+        else{
+            return false;
+        }
+
     }
 
     /**
@@ -182,20 +204,31 @@ class ShoppingCart extends DBController
     /**
      * Completely removes all `games` from a `user`'s shopping `cart`
      * 
-     * @param int $userID   The ID of the owner to the shopping cart
+     * @param int $userID       The ID of the owner to the shopping cart
+     * 
+     * @return bool $success    Whether the operation was successful
      */
     function emptyCart($userID)
     {
-        $query = "DELETE FROM cart WHERE userID = ?";
+        $isCartEmpty = $this->getUserCart($userID);
+        if(!is_null($isCartEmpty)){
+            $query = "DELETE FROM cart WHERE userID = ?";
+
+            $params = array(
+                array(
+                    "param_type" => "i",
+                    "param_value" => $userID
+                )
+            );
+
+            $this->updateDB($query, $params);
+            return true;
+        }
+        else{
+            return false;
+        }
         
-        $params = array(
-            array(
-                "param_type" => "i",
-                "param_value" => $userID
-            )
-        );
-        
-        $this->updateDB($query, $params);
+
     }
     /**
      * Adds a new `user` into the `user` table

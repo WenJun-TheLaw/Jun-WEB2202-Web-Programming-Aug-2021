@@ -1,11 +1,13 @@
 <?php
-if (!isset($_SESSION)) session_start();
+if (session_status() != PHP_SESSION_ACTIVE){session_start();}
 //Check which session variables to expire
 function expireSessionKeys()
 {
-    foreach ($_SESSION["expiries"] as $key => $value) {
-        if (time() > $value) {
-            unset($_SESSION[$key]);
+    if(!is_null($_SESSION["expiries"])){
+        foreach ($_SESSION["expiries"] as $key => $value) {
+            if (time() > $value) {
+                unset($_SESSION[$key]);
+            }
         }
     }
 }

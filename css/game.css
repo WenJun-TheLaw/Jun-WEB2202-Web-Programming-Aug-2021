@@ -11,9 +11,6 @@ body *, .game_text{
     font-family: 'Red Hat Display', sans-serif;
 }
 
-.game_content_flexbox{
-    width: 100%;
-}
 
 .game_text_small{
     color: #A3F7BF;
@@ -34,15 +31,17 @@ body *, .game_text{
 }
 
 .game_left_content{
-    width: 30vw;
+    width: 30%;
     height: auto;
-    /* outline: 5px solid white; */
 }
 
 .game_right_content{
-    width: 70vw;
+    width: 70%;
     height: auto;
-    /* outline: 5px solid white;  */
+}
+
+.row{
+    width: 100%;
 }
 
 .game_img{
