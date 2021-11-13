@@ -36,6 +36,26 @@ class ShoppingCart extends DBController
         return $cartResult;
     }
     /**
+     * Returns all the `games` from a `user`'s `library`
+     * 
+     * @param int $userID       The ID of the owner to the shopping cart
+     * @return $libraryResult   An array of games
+     */
+    function getUserLibrary($userID)
+    {
+        $query = "SELECT games.* FROM games, library WHERE library.userID = ? AND games.gameID = library.gameID ";
+
+        $params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $userID
+            )
+        );
+
+        $libraryResult = $this->getDBResult($query, $params);
+        return $libraryResult;
+    }
+    /**
      * Finds a `game` from the `games` list
      * 
      * @param int $gameID   The ID of the game being searched
@@ -96,15 +116,15 @@ class ShoppingCart extends DBController
         return $userResult;
     }
     /**
-     * Finds a `game` from a `user`'s shopping `cart`
+     * Finds a `game` from a `user`'s `library`.
      * 
-     * @param int $userID   The ID of the owner to the shopping cart
-     * @param int $gameID   The ID of the game being searched
-     * @return $cartResult  An array containing the game (could return `null`)
+     * @param int $userID       The ID of the owner to the shopping cart
+     * @param int $gameID       The ID of the game being searched
+     * @return $libraryResult   An array containing the game (could return `null`)
      */
-    function findGameinCart($userID, $gameID)
+    function findGameinLibrary($userID, $gameID)
     {
-        $query = "SELECT * FROM cart WHERE gameID = ? AND userID = ?";
+        $query = "SELECT * FROM library WHERE gameID = ? AND userID = ?";
         
         $params = array(
             array(
@@ -117,6 +137,31 @@ class ShoppingCart extends DBController
             )
         );
         
+        $libraryResult = $this->getDBResult($query, $params);
+        return $libraryResult;
+    }
+    /**
+     * Finds a `game` from a `user`'s shopping `cart`.
+     * 
+     * @param int $userID   The ID of the owner to the shopping cart
+     * @param int $gameID   The ID of the game being searched
+     * @return $cartResult  An array containing the game (could return `null`)
+     */
+    function findGameinCart($userID, $gameID)
+    {
+        $query = "SELECT * FROM cart WHERE gameID = ? AND userID = ?";
+
+        $params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $gameID
+            ),
+            array(
+                "param_type" => "i",
+                "param_value" => $userID
+            )
+        );
+
         $cartResult = $this->getDBResult($query, $params);
         return $cartResult;
     }
@@ -227,8 +272,45 @@ class ShoppingCart extends DBController
         else{
             return false;
         }
-        
+    }
 
+    /**
+     * Adds all the `games` into the `user`'s `library`. Then completely removes all `games` from a `user`'s shopping `cart`. 
+     * 
+     * 
+     * @param int $userID       The ID of the owner to the shopping cart
+     * 
+     * @return bool $success    Whether the operation was successful
+     */
+    function addToLibrary($userID)
+    {
+        $cart = $this->getUserCart($userID);
+        if(!is_null($cart)){
+            foreach($cart as $key => $value){
+                //Adding games to library
+                $query = "INSERT INTO library (userID, gameID)
+                VALUES (?, ?)";
+
+                $params = array(
+                    array(
+                        "param_type" => "i",
+                        "param_value" => $userID
+                    ),
+                    array(
+                        "param_type" => "i",
+                        "param_value" => $cart[$key]["gameID"],
+                    )
+                );
+
+                $this->updateDB($query, $params);
+            }
+            //Emptying cart
+            $this->emptyCart($userID);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     /**
      * Adds a new `user` into the `user` table

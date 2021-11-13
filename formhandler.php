@@ -44,26 +44,47 @@
             case "cart":
                 if (!empty($_POST["action"])) {
                     switch ($_POST["action"]) {
-                            //Delete item from cart
+                        //Delete item from cart
                         case "delete":
                             if (!empty($_POST["gameID"])) {
                                 $deleteSuccess = $db_handle->deleteCartItem($_SESSION["userID"], $_POST["gameID"]);
                                 $msg = $deleteSuccess ? "Game removed." : "Operation unsuccessful.";
-                                echo "<script type='text/javascript'>
+                                echo "<script type='application/javascript'>
                                     alert('$msg');
                                     window.location.href='cart.php';
                                     </script>";
                             }
                             break;
-                            //Empty the cart
+                        //Empty the cart
                         case "empty":
                             $emptySuccess = $db_handle->emptyCart($_SESSION["userID"]);
                             $msg = $emptySuccess ? "Cart emptied." : "User has nothing in cart to remove :/";
-                            echo "<script type='text/javascript'>
-                                    alert('$msg');
+                            echo "<script type='application/javascript'>
+                                    window.alert('$msg');
                                     window.location.href='cart.php';
                                     </script>";
                             break;
+                        //Checkout the cart
+                        case "checkout":
+                            $checkoutSuccess = $db_handle->addToLibrary($_SESSION["userID"]);
+                            echo "Just pretend you paid :P";
+                            if($checkoutSuccess){
+                                $msg = "Checkout completed, enjoy!";
+                                echo "<script type='application/javascript'>
+                                    window.alert('$msg');
+                                    window.location.href='library.php';
+                                    </script>";
+                            }
+                            else{
+                                $msg = "Oops, operation failed :/";
+                                echo "<script type='application/javascript'>
+                                    window.alert('$msg');
+                                    window.location.href='cart.php';
+                                    </script>";
+                            }
+                            sleep(5); //wait 5 seconds
+                            
+                        break;
 
                             unset($_POST["action"]);
                             unset($_POST["gameID"]);
@@ -78,14 +99,45 @@
                         //Add item to cart
                         case "add":
                             if (!empty($_POST["gameID"])) {
-                                $addSuccess = $db_handle->addToCart($_SESSION["userID"], $_POST["gameID"]);
-                                $msg = $addSuccess ? "Game added." : "Operation unsuccessful. Please note \"Developers and Admins cannot add games to cart!\" ";
-                                echo "<script type='text/javascript'>
-                                        alert('$msg');
-                                        window.location.href='cart.php';
+                                //User doesn't already own the game
+                                if(is_null($db_handle->findGameinLibrary($_SESSION["userID"], $_POST["gameID"]))){
+                                    //Game is not already in cart
+                                    if(is_null($db_handle->findGameinCart($_SESSION["userID"], $_POST["gameID"]))){
+                                        //User is a "Gamer"
+                                        $user = $db_handle->findUserByID($_SESSION["userID"]);
+                                        if(strcasecmp($user[0]["userType"], "Gamer") == 0){
+                                            $addSuccess = $db_handle->addToCart($_SESSION["userID"], $_POST["gameID"]);
+                                            $msg = $addSuccess ? "Game added." : "Operation unsuccessful :<\\nPlease note \"Developers and Admins cannot add games to cart!\"";
+                                            echo "<script type='application/javascript'> 
+                                            window.alert('$msg');
+                                                window.location.href='cart.php';
+                                            </script>";
+                                        }
+                                        else{
+                                            $msg = "Operation unsuccessful :<\\nPlease note \"Developers and Admins cannot add games to cart!\"";
+                                            echo "<script type='application/javascript'>
+                                            window.alert('$msg');
+                                                window.location.href='index.php';
+                                            </script>";
+                                        }                                        
+                                    }
+                                    else{
+                                        $msg = "Operation unsuccessful :<\\nIt seems like the game is already in your cart!";
+                                            echo "<script type='application/javascript'>
+                                            window.alert('$msg');
+                                            window.location.href='index.php';
+                                        </script>";
+                                    }
+                                }
+                                else{
+                                    $msg = "Operation unsuccessful :<\\nIt seems like you already own this game!";
+                                    echo "<script type='application/javascript'>
+                                        window.alert('$msg');
+                                        window.location.href='index.php';
                                     </script>";
+                                }
                             }
-                            break;
+                        break;
                     }
                 }
                 break;
@@ -98,8 +150,8 @@
                         session_unset();
                         session_destroy();
                         $msg = "Successfully logged out, hope to see you soon!";
-                        echo "<script type='text/javascript'>
-                            alert('$msg');
+                        echo "<script type='application/javascript'>
+                            window.alert('$msg');
                             window.location.href='index.php';
                         </script>";
                         break;
@@ -107,10 +159,10 @@
                 break;
         }
     } else {
-        $msg = "How did you get here? It\'s alright, sending you back to safety (the store) now!";
+        $msg = "How did you get here? It's alright, sending you back to safety (the store) now!";
         echo "
-            <script type='text/javascript'>
-                alert('$msg');
+            <script type='application/javascript'>
+                window.alert('$msg');
                 window.location.href = 'index.php';
             </script>";
     }

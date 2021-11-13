@@ -68,7 +68,11 @@
             //Find user name
             $user = $db_handle->findUserByID($_SESSION["userID"]);
             $username = $user[0]['name'];
-            echo <<<_END
+
+            //User type = "Gamer"
+            //Dropdown menu shows "Cart" , "Library" & "Logout"
+            if(strcasecmp($user[0]["userType"], "Gamer") == 0){
+                echo <<<_END
                 <div class="dropdown ms-auto">
                     <button class="dropdown-toggle header_invi_button d-inline-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <div class="header_text ">Welcome,&nbsp;</div>
@@ -76,10 +80,46 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li><a class="dropdown-item header_link p-2" href="cart.php">Cart</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="library.php">Library</a></li>
                         <li><a class="dropdown-item header_link p-2" href="formhandler.php?source=header&action=logout">Logout</a></li>
                     </ul>
                 </div>
-            _END;
+_END;
+            }
+            //User type == "Developer"
+            //Dropdown menu shows "Manage Games" & "Logout"
+            elseif(strcasecmp($user[0]["userType"], "Developer") == 0){
+                echo <<<_END
+                <div class="dropdown ms-auto">
+                    <button class="dropdown-toggle header_invi_button d-inline-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="header_text ">Welcome,&nbsp;</div>
+                        <div class="header_text me-2">$username</div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item header_link p-2" href="manageGames.php">Manage Games</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="formhandler.php?source=header&action=logout">Logout</a></li>
+                    </ul>
+                </div>
+_END;
+            }
+            //User type == "Admin"
+            //Dropdown menu shows "Manage Games", "Manage Applications" & "Logout"
+            elseif (strcasecmp($user[0]["userType"], "Admin") == 0) {
+                echo <<<_END
+                <div class="dropdown ms-auto">
+                    <button class="dropdown-toggle header_invi_button d-inline-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="header_text ">Welcome,&nbsp;</div>
+                        <div class="header_text me-2">$username</div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item header_link p-2" href="manageGames.php">Manage Games</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="manageApplications.php">Manage Applications</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="formhandler.php?source=header&action=logout">Logout</a></li>
+                    </ul>
+                </div>
+_END;
+            }
+
         }
         //User isn't logged in
         else {

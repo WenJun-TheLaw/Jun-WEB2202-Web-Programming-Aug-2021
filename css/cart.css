@@ -1,9 +1,12 @@
 body{
     background-color: #191D21;
-    height: 100vh;
     margin: 0;
     display:flex; 
     flex-direction:column; 
+}
+
+.full_height{
+    min-height: 45vh;
 }
 
 .title{
@@ -34,7 +37,7 @@ body{
 .cart_text_large{
     color: #A3F7BF;
     font-family: 'Red Hat Display', sans-serif;
-    font-size: 1.7em;
+    font-size: 2.5em;
 }
 
 a,
@@ -46,7 +49,7 @@ a:active{
 }
 
 .cart_links{
-    color: #A3F7BF;
+    color: #a3f7bf;
     font-size: 1.5em;
     font-family: 'Red Hat Display', sans-serif;
 }
@@ -79,7 +82,7 @@ a:active{
     width: fit-content;
 }
 
-.cart_empty_button_div{
+.cart_buttons_div, .cart_total_div{
     margin-right: 10vw;
 }
 
@@ -87,10 +90,17 @@ a:active{
     filter: drop-shadow(0px 0px 20px rgba(230, 39, 39,0.6));
 }
 
-.cart_empty_text:hover{
+.cart_empty_button:hover .cart_empty_text{
     color: white;
 }
 
+.cart_checkout_button{
+    filter: drop-shadow(0px 0px 20px rgba(163, 247, 191, 0.6));
+}
+
+.cart_checkout_button:hover .cart_checkout_text{
+    color: white;
+}
 
 /*If screen width >768px, same as md on Bootstrap 5*/
 @media (min-width: 768px){

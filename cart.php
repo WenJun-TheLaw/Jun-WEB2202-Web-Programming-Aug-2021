@@ -1,21 +1,21 @@
 <?php
-    if (session_status() != PHP_SESSION_ACTIVE) {
-        session_start();
-    }
-    //Check which session variables to expire
-    function expireSessionKeys()
-    {
-        if (!is_null($_SESSION["expiries"])) {
-            foreach ($_SESSION["expiries"] as $key => $value) {
-                if (time() > $value) {
-                    unset($_SESSION[$key]);
-                }
+if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+}
+//Check which session variables to expire
+function expireSessionKeys()
+{
+    if (!is_null($_SESSION["expiries"])) {
+        foreach ($_SESSION["expiries"] as $key => $value) {
+            if (time() > $value) {
+                unset($_SESSION[$key]);
             }
         }
     }
-    expireSessionKeys();
-    require_once("shoppingCart.php");
-    $db_handle = new ShoppingCart();
+}
+expireSessionKeys();
+require_once("shoppingCart.php");
+$db_handle = new ShoppingCart();
 ?>
 
 
@@ -49,13 +49,14 @@
     //Display the cart
     $cart = $db_handle->getUserCart($_SESSION['userID']);
     $user = $db_handle->findUserByID($_SESSION["userID"]);
+    $cartTotal = 0;
     ?>
 
     <!-- Header -->
     <?php include("header.php"); ?>
 
     <div class="h1 title text-center"><?php echo $user[0]["name"]; ?>&apos;s Cart</div>
-    <div class="container-fluid">
+    <div class="container-fluid full_height">
         <div class="d-flex flex-column cart_body">
 
             <!-- Display cart items -->
@@ -66,18 +67,25 @@
                     $img    = $cart[$key]["image"];
                     $name   = $cart[$key]["name"];
                     $price  = number_format($cart[$key]["price"], 2);
+                    $cartTotal += $price;
                     $id     = $cart[$key]["gameID"];
                     echo <<<_END
                     
                     <!-- Each idividual Cart Item -->
                     <div class="d-flex cart_item p-4">
                         <!-- Image -->
-                        <img src="$img" class="cart_image" alt="Image of cart item">
-
-                        <!-- Name -->
+                        <a href="game.php?id=$id">
+                            <img src="$img" class="cart_image" alt="Image of cart item">
+                        </a>
+                        
+                        <!-- Name -->           
                         <div class="cart_item_mid_col d-flex flex-column align-items-center ms-4">
-                            <div class="cart_text_medium cart_links" id=cart_name>$name</div>
+                            <a href="game.php?id=$id">
+                                <div class="cart_text_medium cart_links" id=cart_name>$name</div>
+                            </a>
                         </div>
+                       
+
                         <!-- Controls & Price -->
                         <div class="cart_item_right_col d-flex flex-column justify-content-center align-items-center ms-auto">
                             <!-- Price Text -->
@@ -102,16 +110,31 @@
                 
 _END;
                 }
-                echo '      
-                <!-- Empty Cart Button -->
-                <form action="formhandler.php" method="POST" class="ms-auto cart_empty_button_div">
-                    <input type="hidden" name="action" value="empty">
-                    <input type="hidden" name="source" value="cart">
-                    <button type="submit" class="cart_invi_button btn btn-danger buttons cart_empty_button">
-                        <i class="bi bi-x-lg cart_text_medium text-decoration-none fst-normal cart_empty_text">&nbsp;Empty cart</i>
-                    </button>
-                </form>
-                ';
+                $cartTotal = number_format($cartTotal, 2);
+                echo <<<_END
+                <div class="d-inline-flex align-items-end cart_total_div ms-auto mt-4">
+                    <div class="cart_text_large h1">Total&colon;&nbsp;</div>
+                    <div class="cart_text_large h1">RM&nbsp;$cartTotal</div>
+                </div>
+                <div class="d-flex align-items-end cart_buttons_div">
+                    <!-- Empty Cart Button -->
+                    <form action="formhandler.php" method="POST" class="ms-auto">
+                        <input type="hidden" name="action" value="empty">
+                        <input type="hidden" name="source" value="cart">
+                        <button type="submit" class="cart_invi_button btn btn-danger buttons cart_empty_button">
+                            <i class="bi bi-x-lg cart_text_medium text-decoration-none fst-normal cart_empty_text">&nbsp;Empty cart</i>
+                        </button>
+                    </form>
+                    <!-- Checkout Button -->
+                    <form action="formhandler.php" method="POST" class="ms-2">
+                        <input type="hidden" name="action" value="checkout">
+                        <input type="hidden" name="source" value="cart">
+                        <button type="submit" class="cart_invi_button btn btn-success buttons cart_checkout_button">
+                            <i class="bi bi-check-lg cart_text_medium text-decoration-none fst-normal cart_checkout_text">&nbsp;Checkout</i>
+                        </button>
+                    </form>
+                </div>
+_END;
             } else {
                 echo <<<_END
                 <div class="h2 title text-center">Your cart is empty!</div>
