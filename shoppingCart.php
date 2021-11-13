@@ -116,6 +116,26 @@ class ShoppingCart extends DBController
         return $userResult;
     }
     /**
+     * Finds a `developer` from the `developer` list with ID
+     * 
+     * @param int $developerID  The ID of the developer being searched
+     * @return $devResult       An array containing the user (could return `null`)
+     */
+    function findDeveloper($developerID)
+    {
+        $query = "SELECT * FROM developer WHERE developerID = ?";
+
+        $params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $developerID
+            )
+        );
+
+        $devResult = $this->getDBResult($query, $params);
+        return $devResult;
+    }
+    /**
      * Finds a `game` from a `user`'s `library`.
      * 
      * @param int $userID       The ID of the owner to the shopping cart
@@ -167,12 +187,13 @@ class ShoppingCart extends DBController
     }
 
     /**
-     * Adds a `game` into a `user`'s shopping `cart`. Checks if:
+     * Adds a `game` into a `user`'s shopping `cart`. 
+     * 
+     * Checks if:
      * 1. the user exist
      * 2. the game exists
      * 3. the user is of type "Gamer" 
-     * 4. whether the game is already in the cart
-     *
+     * 4. whether the game is already in the cart<br>
      * 
      * @param int $userID       The ID of the owner to the shopping cart
      * @param int $gameID       The ID of the game being searched
@@ -275,16 +296,20 @@ class ShoppingCart extends DBController
     }
 
     /**
-     * Adds all the `games` into the `user`'s `library`. Then completely removes all `games` from a `user`'s shopping `cart`. 
+     * Checkouts the `user`'s `cart`.
      * 
+     * Adds all the `games` from `user`'s `cart` into the `user`'s `library`.
+     * 
+     * Then completely removes all `games` from a `user`'s shopping `cart`. 
      * 
      * @param int $userID       The ID of the owner to the shopping cart
      * 
      * @return bool $success    Whether the operation was successful
      */
-    function addToLibrary($userID)
+    function checkOut($userID)
     {
         $cart = $this->getUserCart($userID);
+        //If cart isn't empty
         if(!is_null($cart)){
             foreach($cart as $key => $value){
                 //Adding games to library
@@ -303,11 +328,16 @@ class ShoppingCart extends DBController
                 );
 
                 $this->updateDB($query, $params);
+
+                //Incrementing developer's revenue
+                $game = $this->findGame($cart[$key]["gameID"]);
+                $this->addRevenue($game[0]["developerID"], $game[0]["price"]);
             }
             //Emptying cart
             $this->emptyCart($userID);
             return true;
         }
+        //Cart is empty
         else{
             return false;
         }
@@ -430,10 +460,51 @@ class ShoppingCart extends DBController
             );
 
             $this->updateDB($query, $params);
+            return true;
         }
         //Add user operation failed
         else{
             return false;
         }
     }
+    /**
+     * Increments a `developer`'s revenue  
+     * 
+     * @param string $developerID   The id of the developer
+     * @param string $revenue       The amount to increment
+     * @return bool  $success       Whether the operation was successful
+     */
+    function addRevenue($developerID, $revenue)
+    {
+        $developer = $this->findDeveloper($developerID);
+        //Check whether the developer exists
+        if(strcasecmp($developer[0]["developerID"], $developerID) == 0){
+            //Increment revenue
+            $totalRevenue = $revenue + $developer[0]["revenue"];
+            echo "Total revenue: $totalRevenue";
+
+            $query = "UPDATE developer
+                    SET revenue = ?
+                    WHERE developerID = ?";
+
+            $params = array(
+                array(
+                    "param_type" => "d",
+                    "param_value" => $totalRevenue,
+                ),
+                array(
+                    "param_type" => "i",
+                    "param_value" => $developerID
+                )
+            );
+
+            $this->updateDB($query, $params);
+            return true;
+        }
+        //Add revenue operation failed
+        else {
+            return false;
+        }
+    }
+
 }

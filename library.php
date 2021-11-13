@@ -48,11 +48,11 @@ $db_handle = new ShoppingCart();
     $user = $db_handle->findUserByID($_SESSION["userID"]);
     $library = $db_handle->getUserLibrary($_SESSION["userID"]);
     if(strcasecmp($user[0]["userType"], "Gamer") != 0) {
-        $error = "It seems like your account isn't a gamer account.\\nSowwy you shouldn't be here :<";
+        $error = "It seems like your account isn\'t a gamer account.\\nSowwy you shouldn\'t be here :<";
         echo "<script type='text/javascript'>
-                    alert('$error');
-                    window.location.href='index.php';
-                  </script>";
+                window.alert('$error');
+                window.location.href='index.php';
+            </script>";
     }
 
     //Display the library

@@ -32,6 +32,17 @@ $db_handle = new ShoppingCart();
     <title>E.GG</title>
 </head>
 
+<?
+    //Redirect "Developers" to dev_index.php
+    if (isset($_SESSION["userID"])) {
+        $user = $db_handle->findUserByID($_SESSION["userID"]);
+        if(strcasecmp($user[0]["userType"], "Developer") == 0){
+            header("Location: dev_index.php");
+            die();
+        }
+    }
+?>
+
 <body>
     <!-- Header -->
     <?php include("header.php"); ?>

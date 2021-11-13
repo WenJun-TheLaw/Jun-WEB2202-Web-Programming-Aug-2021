@@ -52,7 +52,7 @@
                                 echo "<script type='application/javascript'>
                                     alert('$msg');
                                     window.location.href='cart.php';
-                                    </script>";
+                                </script>";
                             }
                             break;
                         //Empty the cart
@@ -62,25 +62,26 @@
                             echo "<script type='application/javascript'>
                                     window.alert('$msg');
                                     window.location.href='cart.php';
-                                    </script>";
+                                </script>";
                             break;
                         //Checkout the cart
-                        case "checkout":
-                            $checkoutSuccess = $db_handle->addToLibrary($_SESSION["userID"]);
+                        case "checkout":                            
+                            $checkoutSuccess = $db_handle->checkOut($_SESSION["userID"]);
                             echo "Just pretend you paid :P";
                             if($checkoutSuccess){
+                                //Redirect user
                                 $msg = "Checkout completed, enjoy!";
                                 echo "<script type='application/javascript'>
                                     window.alert('$msg');
                                     window.location.href='library.php';
-                                    </script>";
+                                </script>";
                             }
                             else{
                                 $msg = "Oops, operation failed :/";
                                 echo "<script type='application/javascript'>
                                     window.alert('$msg');
                                     window.location.href='cart.php';
-                                    </script>";
+                                </script>";
                             }
                             sleep(5); //wait 5 seconds
                             

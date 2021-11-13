@@ -45,10 +45,18 @@ $db_handle = new ShoppingCart();
                         window.location.href='login.php';
                         </script>";
     }
+    //User isn't "Gamer"
+    $user = $db_handle->findUserByID($_SESSION["userID"]);
+    if (strcasecmp($user[0]["userType"], "Gamer") != 0) {
+        $error = "It seems like your account isn\'t a gamer account.\\nSowwy you shouldn\'t be here :<";
+        echo "<script type='text/javascript'>
+                    alert('$error');
+                    window.location.href='index.php';
+                  </script>";
+    }
 
     //Display the cart
     $cart = $db_handle->getUserCart($_SESSION['userID']);
-    $user = $db_handle->findUserByID($_SESSION["userID"]);
     $cartTotal = 0;
     ?>
 
