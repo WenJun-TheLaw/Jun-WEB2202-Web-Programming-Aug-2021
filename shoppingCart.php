@@ -506,5 +506,190 @@ class ShoppingCart extends DBController
             return false;
         }
     }
+    /**
+     * Adds a new `game` into the `games` table 
+     * @param array $args An associative array of the below arguments:
+     *
+     * - string $name              - The name of the game
+     * - string $description       - The description of the game
+     * - string $ageRating         - The age rating of the game
+     * - double $price             - The price of the game
+     * - string $image             - The relative path to the image of the game
+     * - string $min_requirements  - The HTML formated minimum requirements of the game
+     * - string $rec_requirements  - The HTML formated recommended requirements of the game
+     * - int    $developerID       - The ID of the game developer
+     * 
+     * @return bool $success       - Whether the operation succeeded
+     */
+    function addNewGame($args)
+    {
+        //Return false if any of the above arguments are null
+        //looping through the argument array
+        foreach($args as $key => $value){
+            if(is_null($value) || !isset($value)){
+                return false;
+            }
+        }
+        $name               = $args["name"];
+        $description        = $args["description"];
+        $ageRating          = $args["ageRating"];
+        $price              = $args["price"];
+        $image              = $args["image"];
+        $min_requirements   = $args["min_req"];
+        $rec_requirements   = $args["rec_req"];
+        $developerID        = $args["developerID"];
+
+        //Add into `games` table
+        $query = "INSERT INTO `games` (`gameID`, `name`, `description`, `ageRating`, `price`, `image`, `min_requirements`, `rec_requirements`, `developerID`) 
+        VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $params = array(
+            array(
+                "param_type" => "s",
+                "param_value" => $name,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $description,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $ageRating,
+            ),
+            array(
+                "param_type" => "d",
+                "param_value" => $price,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $image,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $min_requirements,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $rec_requirements,
+            ),
+            array(
+                "param_type" => "i",
+                "param_value" => $developerID
+            )
+        );
+
+
+        $this->updateDB($query, $params);
+        return true;
+    }
+
+    /**
+     * Edits an existing `game` from the `games` table 
+     * @param int   $gameID        - The ID of the game to be edited
+     * @param array $args          - An associative array of the below arguments:
+     *
+     * - string $name              - The name of the game
+     * - string $description       - The description of the game
+     * - string $ageRating         - The age rating of the game
+     * - double $price             - The price of the game
+     * - string $image             - The relative path to the image of the game
+     * - string $min_requirements  - The HTML formated minimum requirements of the game
+     * - string $rec_requirements  - The HTML formated recommended requirements of the game
+     * - int    $developerID       - The ID of the game developer
+     * 
+     * @return int[] $result       - First int is boolean representing success of the operation, second int is the gameID if successful (-1 if unsucecssful)
+     */
+    function editGame($gameID, $args)
+    {
+        //Add into `games` table
+        $query = "UPDATE games
+        SET `gameID` = ?, `name` = ?, `description` = ?, `ageRating` = ?, `price` = ?, `image` = ?, `min_requirements` = ?, `rec_requirements` = ?, `developerID` = ?
+        WHERE gameID = ?";
+        //Return false if any of the above arguments are null
+        //looping through the argument array
+        foreach($args as $key => $value){
+            if(is_null($value) || !isset($value)){
+                return [0, -1];
+            }
+        }
+        $name               = $args["name"];
+        $description        = $args["description"];
+        $ageRating          = $args["ageRating"];
+        $price              = $args["price"];
+        $image              = $args["image"];
+        $min_requirements   = $args["min_req"];
+        $rec_requirements   = $args["rec_req"];
+        $developerID        = $args["developerID"];
+
+        //Add into `games` table
+        $query = "INSERT INTO `games` (`gameID`, `name`, `description`, `ageRating`, `price`, `image`, `min_requirements`, `rec_requirements`, `developerID`) 
+        VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $params = array(
+            array(
+                "param_type" => "s",
+                "param_value" => $name,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $description,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $ageRating,
+            ),
+            array(
+                "param_type" => "d",
+                "param_value" => $price,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $image,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $min_requirements,
+            ),
+            array(
+                "param_type" => "s",
+                "param_value" => $rec_requirements,
+            ),
+            array(
+                "param_type" => "i",
+                "param_value" => $developerID
+            ),
+            array(
+                "param_type" => "i",
+                "param_value" => $gameID
+            )
+        );
+
+        $this->updateDB($query, $params);
+        //Get gameID, since this was just added and ID is auto increment, the last game is the newest game that is added
+        $query = "SELECT * FROM games ORDER BY gameID DESC";
+        $gameResult = $this->getDBResult($query);
+        return [1, $gameResult[0]["gameID"]];
+    }
+
+    /**
+     * Returns all the `games` that is published by this `developer`
+     * 
+     * @param int $developerID   The ID of the developer
+     * @return $listResult  An array of games
+     */
+    function getDeveloperGames($developerID)
+    {
+        $query = "SELECT games.* FROM games WHERE developerID = ?";
+
+        $params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $developerID
+            )
+        );
+
+        $listResult = $this->getDBResult($query, $params);
+        return $listResult;
+    }
 
 }

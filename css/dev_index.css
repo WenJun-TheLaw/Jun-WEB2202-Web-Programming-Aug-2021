@@ -33,7 +33,8 @@ a:active{
 .dev_buttons_div{
     width: auto;
     height: auto;
-    margin: 0 10vw;
+    margin-left: 10vw;
+    margin-right: 10vw;
 }
 
 .dev_big_buttons{

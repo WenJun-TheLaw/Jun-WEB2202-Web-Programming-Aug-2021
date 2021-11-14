@@ -40,9 +40,9 @@ $db_handle = new ShoppingCart();
 if (!isset($_SESSION["userID"])) {
     $error = "You are not logged in! Please log in first.";
     echo "<script type='text/javascript'>
-                alert('$error');
-                window.location.href='login.php';
-            </script>";
+                    alert('$error');
+                    window.location.href='login.php';
+                </script>";
 }
 
 //If user isn't "Developer"
@@ -50,17 +50,17 @@ $user = $db_handle->findUserByID($_SESSION["userID"]);
 if (strcasecmp($user[0]["userType"], "Developer") != 0) {
     $error = "It seems like your account isn\'t a developer account.\\nSowwy you shouldn\'t be here :<";
     echo "<script type='text/javascript'>
-                        alert('$error');
-                        window.location.href='index.php';
-                </script>";
+                alert('$error');
+                window.location.href='index.php';
+        </script>";
 }
 
 $dev = $db_handle->findDeveloper($_SESSION["userID"]);
 $accountStatus = $dev[0]["verified"];
 if ($accountStatus == 1) {
-    $accountStatus = "Verified";
+    $accountStatusText = "Verified";
 } else {
-    $accountStatus = "Pending verification...";
+    $accountStatusText = "Pending verification...";
 }
 ?>
 
@@ -77,20 +77,29 @@ if ($accountStatus == 1) {
             </div>
             <div class="d-inline-flex py-4">
                 <div class="dev_text_large fw-bold">Account status&colon;&nbsp;</div>
-                <div class="dev_text_large">&nbsp;<?php echo $accountStatus ?></div>
+                <div class="dev_text_large">&nbsp;<?php echo $accountStatusText ?></div>
             </div>
         </div>
 
         <!-- Big Mean Buttons :>-->
-        <div class="d-flex my-4 flex-md-row flex-column justify-content-md-evenly align-items-center dev_buttons_div">
-            <a href="#">
-                <button class="dev_big_buttons">
+        <div class="d-flex mt-4 flex-md-row flex-column justify-content-md-evenly align-items-center dev_buttons_div">
+            <!-- Create a new game-->
+            <?php
+            if ($accountStatus == 1) {
+                $newlink  = "game_edit.php?id=new";
+            } else {
+                $newlink  = "formhandler.php?source=dev_index&action=unverified";
+            }
+            ?>
+            <a href="<?php echo $newlink ?>">
+                <button class="dev_big_buttons mt-4">
                     <i class="bi bi-plus-lg dev_text_large" style="font-size:5em;"></i>
                     <div class="dev_text_large">Add New Game</div>
                 </button>
             </a>
-            <a href="#">
-                <button class="dev_big_buttons">
+            <!-- Bring dev to list of games they published -->
+            <a href="game_edit_list.php">
+                <button class="dev_big_buttons mt-4">
                     <i class="bi bi-pencil-square dev_text_large" style="font-size:5em;"></i>
                     <div class="dev_text_large">Edit Existing Game</div>
                 </button>

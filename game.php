@@ -81,7 +81,7 @@
                     <div class="game_text_small" id="game_description"> <?php echo $game_info[0]["description"]; ?> </div>
                     <!-- First row (Developer & Age Rating) -->
                     <div class="row mt-4">
-                        <!-- Game Description -->
+                        <!-- Developer -->
                         <div class="col">
                             <div class="d-flex flex-column">
                                 <div class="game_text_medium">Developer&colon;&nbsp;</div>

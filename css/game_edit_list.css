@@ -1,0 +1,85 @@
+body{
+    background-color: #191D21;
+    margin: 0;
+    display:flex; 
+    flex-direction:column; 
+}
+
+.title{
+    color: #A3F7BF;
+    font-size: 2.5em;
+    font-family: 'Red Hat Display', sans-serif;
+    margin: 3vh 0;
+}
+a,
+a:link,
+a:visited,
+a:hover,
+a:active{
+    text-decoration: none;
+}
+
+.library_body{
+    min-height: 45vh;
+}
+
+.library_item{
+    margin: 2vh 10vw;
+    background-color: #435055;
+    border-radius: 25px;
+}
+
+.library_text_medium{
+    color: #A3F7BF;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 1.5em;
+}
+
+.library_item_right_col{
+    width: fit-content;
+}
+
+.library_invi_button{
+    background: transparent no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    box-shadow: none;
+    -webkit-box-shadow: none; 
+    -moz-box-shadow: none;
+}
+
+.library_invi_button:hover .library_links {
+    color: #A3F7BF;
+}
+
+.bi-pencil-square{
+    font-size: 2em;
+    color: white;
+}
+
+.library_links{
+    color: white;
+}
+
+
+/*If screen width >768px, same as md on Bootstrap 5*/
+@media (min-width: 768px){
+   .library_image{
+        height: 200px;
+        width: 200px;
+        border-radius: 25px;
+        object-fit:cover;
+    }
+}
+
+/*If screen width <768px, same as md on Bootstrap 5*/
+@media (max-width: 768px){
+    .library_image{
+        height: 150px;
+        width: 150px;
+        border-radius: 25px;
+        object-fit: cover;
+    }
+}

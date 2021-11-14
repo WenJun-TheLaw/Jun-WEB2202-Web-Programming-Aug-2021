@@ -96,7 +96,7 @@ _END;
                         <div class="header_text me-2">$username</div>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item header_link p-2" href="manageGames.php">Manage Games</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="game_edit_list.php">Manage Games</a></li>
                         <li><a class="dropdown-item header_link p-2" href="formhandler.php?source=header&action=logout">Logout</a></li>
                     </ul>
                 </div>
@@ -112,7 +112,7 @@ _END;
                         <div class="header_text me-2">$username</div>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item header_link p-2" href="manageGames.php">Manage Games</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="game_edit_list.php">Manage Games</a></li>
                         <li><a class="dropdown-item header_link p-2" href="manageApplications.php">Manage Applications</a></li>
                         <li><a class="dropdown-item header_link p-2" href="formhandler.php?source=header&action=logout">Logout</a></li>
                     </ul>

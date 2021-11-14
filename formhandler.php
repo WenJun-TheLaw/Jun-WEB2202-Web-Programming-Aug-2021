@@ -40,7 +40,7 @@
     //Checking for source
     if (!empty($_POST["source"])) {
         switch ($_POST["source"]) {
-                //Cart form handling
+            //Cart form handling
             case "cart":
                 if (!empty($_POST["action"])) {
                     switch ($_POST["action"]) {
@@ -93,7 +93,7 @@
                     }
                 }
                 break;
-                //Game form handling
+            //Game form handling
             case "game":
                 if (!empty($_POST["action"])) {
                     switch ($_POST["action"]) {
@@ -141,7 +141,97 @@
                         break;
                     }
                 }
-                break;
+            break;
+            //Game Edit form handling
+            case "edit":
+                if (!empty($_POST["action"])) {
+                    switch ($_POST["action"]) {
+                        //Save game edits into database
+                        case "save":
+                            if (!empty($_POST["gameID"])) {
+                                //Image upload processing
+                                if(array_key_exists('image_file', $_FILES)){
+                                    //Setting up directories
+                                    $uploadsDir = __DIR__ . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'games';
+                                    $targetFilename = $uploadsDir . DIRECTORY_SEPARATOR . basename($_FILES['image_file']['name']);
+                                    $relativeFilename = substr($targetFilename, (strlen(__DIR__ )+ 1));
+                                    $uploadImg = $_FILES['image_file'];
+
+                                    switch ($uploadImg['error']) {
+                                        case UPLOAD_ERR_OK: 
+                                            //Expect 'image/png'
+                                            mime_content_type($uploadImg['tmp_name']);
+                                            move_uploaded_file($uploadImg['tmp_name'], $targetFilename);
+                                            $gameImg = $relativeFilename;
+                                        break;
+                                        case UPLOAD_ERR_INI_SIZE:
+                                            $error = sprintf('Failed to upload [%s]: the file is too big.', $uploadInfo['name']);
+                                            echo "<script type='text/javascript'>
+                                                alert('$error');
+                                                history.go(-1);
+                                                </script>";
+                                            break;
+                                        case UPLOAD_ERR_NO_FILE:
+                                            //If no file and there isn't already a picture
+                                            if(empty($_POST["image"])){
+                                                $error = "There is no image attached!";
+                                                echo "<script type='text/javascript'>
+                                                alert('$error');
+                                                history.go(-1);
+                                                </script>";
+                                                die();
+                                            }
+                                            $gameImg = $_POST["image"];
+                                            break; 
+                                    }
+                                }
+
+                                //Adding arguments to associative array
+                                $gameArgs["name"]        = $_POST["name"];
+                                $gameArgs["description"] = $_POST["description"];
+                                $gameArgs["ageRating"]   = $_POST["ageRating"];
+                                $gameArgs["price"]       = $_POST["price"];
+                                $gameArgs["image"]       = $gameImg;
+                                $gameArgs["min_req"]     = $_POST["min_req"];
+                                $gameArgs["rec_req"]     = $_POST["rec_req"];
+                                $gameArgs["developerID"] = $_POST["developerID"];
+
+                                //Game is new
+                                if(strcasecmp($_POST["gameID"], "new") == 0){                                    //New game
+                                   if($db_handle->addNewGame($gameArgs)){
+                                        $msg = "Operation successful!";
+                                        echo "<script type='application/javascript'>
+                                            window.alert('$msg');
+                                            window.location.href='index.php';
+                                        </script>";
+                                    }
+                                }
+                                //Game is not new (edit)
+                                else{
+                                    //Edit game
+                                    $result = $db_handle->editGame($_POST["gameID"], $gameArgs);
+                                    if($result[0] == 1){
+                                        $msg = "Operation successful!";
+                                        echo "<script type='application/javascript'>
+                                            window.alert('$msg');
+                                            window.location.href='game.php?id=$result[1]';
+                                        </script>";
+                                    }
+                                    else{
+                                        $msg = "Operation failed!";
+                                        echo "<script type='application/javascript'>
+                                            window.alert('$msg');
+                                            window.location.href='index.php';
+                                        </script>";
+                                    }
+                                }
+
+                                
+                            }
+                        break;
+                    }
+                }
+            break;
         }
     } elseif (!empty($_GET["source"])) {
         switch ($_GET["source"]) {
@@ -153,6 +243,17 @@
                         $msg = "Successfully logged out, hope to see you soon!";
                         echo "<script type='application/javascript'>
                             window.alert('$msg');
+                            window.location.href='index.php';
+                        </script>";
+                        break;
+                }
+            break;
+            case "dev_index":
+                switch ($_GET["action"]) {
+                    case "unverified":
+                        $error = "Your account has not been verified yet!";
+                        echo "<script type='application/javascript'>
+                            window.alert('$error');
                             window.location.href='index.php';
                         </script>";
                         break;
