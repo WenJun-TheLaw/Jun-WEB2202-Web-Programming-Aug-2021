@@ -153,10 +153,14 @@
                                 if(array_key_exists('image_file', $_FILES)){
                                     //Setting up directories
                                     $uploadsDir = __DIR__ . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'games';
-                                    $targetFilename = $uploadsDir . DIRECTORY_SEPARATOR . basename($_FILES['image_file']['name']);
+                                    $baseName = basename($_FILES['image_file']['name']);
+                                    $baseName = preg_replace('/\s+/', '_', $baseName);
+                                    $targetFilename = $uploadsDir . DIRECTORY_SEPARATOR . $baseName;
                                     $relativeFilename = substr($targetFilename, (strlen(__DIR__ )+ 1));
                                     $uploadImg = $_FILES['image_file'];
 
+
+                                    
                                     switch ($uploadImg['error']) {
                                         case UPLOAD_ERR_OK: 
                                             //Expect 'image/png'
@@ -198,10 +202,18 @@
                                 //Game is new
                                 if(strcasecmp($_POST["gameID"], "new") == 0){
                                     $gameArgs["developerID"] = $_POST["developerID"];
-    
+
                                     //New game
-                                   if($db_handle->addNewGame($gameArgs)){
+                                    $result = $db_handle->addNewGame($gameArgs);
+                                   if($result[0] == 1){
                                         $msg = "Operation successful!";
+                                        echo "<script type='application/javascript'>
+                                            window.alert('$msg');
+                                            window.location.href='game.php?id=$result[1]';
+                                        </script>";
+                                    } 
+                                    else {
+                                        $msg = "Operation failed!";
                                         echo "<script type='application/javascript'>
                                             window.alert('$msg');
                                             window.location.href='index.php';
@@ -211,12 +223,12 @@
                                 //Game is not new (edit)
                                 else{
                                     //Edit game
-                                    $result = $db_handle->editGame($_POST["gameID"], $gameArgs);
-                                    if($result[0] == 1){
+                                    $gameID = $_POST["gameID"];
+                                    if($db_handle->editGame($gameID, $gameArgs)){
                                         $msg = "Operation successful!";
                                         echo "<script type='application/javascript'>
                                             window.alert('$msg');
-                                            window.location.href='game.php?id=$result[1]';
+                                            window.location.href='game.php?id=$gameID';
                                         </script>";
                                     }
                                     else{

@@ -1,9 +1,11 @@
 <?php
-if (session_status() != PHP_SESSION_ACTIVE){session_start();}
+if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+}
 //Check which session variables to expire
 function expireSessionKeys()
 {
-    if(!is_null($_SESSION["expiries"])){
+    if (!is_null($_SESSION["expiries"])) {
         foreach ($_SESSION["expiries"] as $key => $value) {
             if (time() > $value) {
                 unset($_SESSION[$key]);
@@ -33,14 +35,14 @@ $db_handle = new ShoppingCart();
 </head>
 
 <?
-    //Redirect "Developers" to dev_index.php
-    if (isset($_SESSION["userID"])) {
-        $user = $db_handle->findUserByID($_SESSION["userID"]);
-        if(strcasecmp($user[0]["userType"], "Developer") == 0){
-            header("Location: dev_index.php");
-            die();
-        }
+//Redirect "Developers" to dev_index.php
+if (isset($_SESSION["userID"])) {
+    $user = $db_handle->findUserByID($_SESSION["userID"]);
+    if (strcasecmp($user[0]["userType"], "Developer") == 0) {
+        header("Location: dev_index.php");
+        die();
     }
+}
 ?>
 
 <body>
@@ -68,7 +70,7 @@ $db_handle = new ShoppingCart();
                 $name = $games_info[$counter]["name"];
                 $id = $counter + 1;
                 print('
-                    <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
+                    <div class="col-md d-flex text-center flex-column game_card">
                         <a href="game.php?id=' . $id . '">
                             <img src="' . $img . '" alt="image of a game" class="game_img">
                             <div class="game_name">' . $name . '</div>
@@ -88,21 +90,29 @@ $db_handle = new ShoppingCart();
         <!-- Top Sellers Game Row -->
         <div class="row mt-4 d-flex justify-content-center">
             <?php
-                for ($counter = 5; $counter < 9; $counter++) {
-                    $img = $games_info[$counter]["image"];
-                    $name = $games_info[$counter]["name"];
-                    $id = $counter + 1;
-                    print('
-                        <div class="col-md d-flex justify-content-center text-center align-items-center flex-column game_card">
+            for ($counter = 5; $counter < 9; $counter++) {
+                $img = $games_info[$counter]["image"];
+                $name = $games_info[$counter]["name"];
+                $id = $counter + 1;
+                print('
+                        <div class="col-md d-flex text-center align-items-center flex-column game_card">
                             <a href="game.php?id=' . $id . '">
                                 <img src="' . $img . '" alt="image of a game" class="game_img">
                                 <div class="game_name">' . $name . '</div>
                             </a>
                         </div>
                         ');
-                    $total_games_displayed++;
-                }
+                $total_games_displayed++;
+            }
             ?>
+        </div>
+        <!-- See More Games Row -->
+        <div class="row mt-4 d-flex">
+            <div class="col-md d-inline-flex justify-content-center">
+                <div class="game_text">Did not find what you want? Click&nbsp;</div>
+                <a href="game_list.php" class="game_name game_name_big" style="margin:0">here</a>
+                <div class="game_text">&nbsp;to find more games!</div>
+            </div>
         </div>
     </div>
 

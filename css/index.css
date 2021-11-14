@@ -30,6 +30,16 @@ a:active{
     color: #29A19C;
 }
 
+.game_text{
+    color: #A3F7BF;
+    font-size: 1.7em;
+    font-family: 'Red Hat Display', sans-serif;
+}
+
+.game_name_big{
+    font-size: 1.7em;
+}
+
 
 /*If screen width >768px, same as md on Bootstrap 5*/
 @media (min-width: 768px){

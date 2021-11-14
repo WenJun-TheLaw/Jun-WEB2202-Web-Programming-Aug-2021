@@ -331,7 +331,7 @@ class ShoppingCart extends DBController
 
                 //Incrementing developer's revenue
                 $game = $this->findGame($cart[$key]["gameID"]);
-                $this->addRevenue($game[0]["developerID"], $game[0]["price"]);
+                $this->addRevenue($game[0]["developerID"], number_format($game[0]["price"],2));
             }
             //Emptying cart
             $this->emptyCart($userID);
@@ -480,8 +480,8 @@ class ShoppingCart extends DBController
         //Check whether the developer exists
         if(strcasecmp($developer[0]["developerID"], $developerID) == 0){
             //Increment revenue
+            $revenue = floatval(preg_replace("/[^-0-9\.]/", "", $revenue));
             $totalRevenue = $revenue + $developer[0]["revenue"];
-            echo "Total revenue: $totalRevenue";
 
             $query = "UPDATE developer
                     SET revenue = ?
@@ -519,7 +519,7 @@ class ShoppingCart extends DBController
      * - string $rec_requirements  - The HTML formated recommended requirements of the game
      * - int    $developerID       - The ID of the game developer
      * 
-     * @return bool $success       - Whether the operation succeeded
+     * @return int[] $result       - First int is boolean representing success of the operation, second int is the gameID if successful (-1 if unsucecssful)
      */
     function addNewGame($args)
     {
@@ -527,7 +527,7 @@ class ShoppingCart extends DBController
         //looping through the argument array
         foreach($args as $key => $value){
             if(is_null($value) || !isset($value)){
-                return false;
+                return [0, -1];
             }
         }
         $name               = $args["name"];
@@ -580,7 +580,10 @@ class ShoppingCart extends DBController
 
 
         $this->updateDB($query, $params);
-        return true;
+        //Get gameID, since this was just added and ID is auto increment, the last game is the newest game that is added
+        $query = "SELECT * FROM games ORDER BY gameID DESC";
+        $gameResult = $this->getDBResult($query);
+        return [1, $gameResult[0]["gameID"]];
     }
 
     /**
@@ -595,8 +598,8 @@ class ShoppingCart extends DBController
      * - string $image             - The relative path to the image of the game
      * - string $min_requirements  - The HTML formated minimum requirements of the game
      * - string $rec_requirements  - The HTML formated recommended requirements of the game
-     *  
-     * @return int[] $result       - First int is boolean representing success of the operation, second int is the gameID if successful (-1 if unsucecssful)
+     *       
+     * @return bool $success       - Whether the operation succeeded
      */
     function editGame($gameID, $args)
     {
@@ -604,7 +607,7 @@ class ShoppingCart extends DBController
         //looping through the argument array
         foreach($args as $key => $value){
             if(is_null($value) || !isset($value)){
-                return [0, -1];
+                return false;
             }
         }
         $name               = $args["name"];
@@ -656,10 +659,8 @@ class ShoppingCart extends DBController
         );
 
         $this->updateDB($query, $params);
-        //Get gameID, since this was just added and ID is auto increment, the last game is the newest game that is added
-        $query = "SELECT * FROM games ORDER BY gameID DESC";
-        $gameResult = $this->getDBResult($query);
-        return [1, $gameResult[0]["gameID"]];
+        //Return gameID
+        return true;
     }
 
     /**

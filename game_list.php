@@ -36,38 +36,13 @@ $db_handle = new ShoppingCart();
 
 <body>
     <?php
-    //If user not logged in
-    if (!isset($_SESSION["userID"])) {
-        $error = "You are not logged in! Please log in first.";
-        echo "<script type='text/javascript'>
-                            alert('$error');
-                            window.location.href='login.php';
-                            </script>";
-    }
-    //User isn't "Developer" or "Admin"
-    $user = $db_handle->findUserByID($_SESSION["userID"]); 
-    if (strcasecmp($user[0]["userType"], "Gamer") == 0) {
-        $error = "It seems like your account isn\'t a developer account.\\nSowwy you shouldn\'t be here :<";
-        echo "<script type='text/javascript'>
-                window.alert('$error');
-                window.location.href='index.php';
-            </script>";
-    }
-    //Developer
-    elseif (strcasecmp($user[0]["userType"], "Developer") == 0){
-        $list = $db_handle->getDeveloperGames($_SESSION["userID"]);
-    }
-    //Admin
-    elseif (strcasecmp($user[0]["userType"], "Admin") == 0){
+        //Display the game list
         $list = $db_handle->getAllGames();
-    }
-
-    //Display the game list
     ?>
 
     <!-- Header -->
     <?php include("header.php"); ?>
-    <div class="h1 title text-center">Games published by&nbsp;<?php echo $user[0]["name"]; ?></div>
+    <div class="h1 title text-center">All Games:</div>
 
 
     <div class="container-fluid library_body">
@@ -91,15 +66,8 @@ $db_handle = new ShoppingCart();
                         <div class="library_item_mid_col d-flex flex-column align-items-center ms-4">
                             <div class="library_text_medium" id=library_name>$name</div>
                         </div>
-                        <!-- Edit Button -->
-                        <div class="library_item_right_col d-flex flex-column justify-content-center ms-auto">
-                            <button type="submit" class="library_invi_button d-inline-flex align-items-center" id="edit_button" onclick="window.location.href='game_edit.php?id=$id';">
-                                <i class="bi bi-pencil-square library_links"></i>
-                                <div class="library_text_medium library_links ms-2">Edit</div>
-                            </button>
-                        </div>
                         <!-- View Button -->
-                        <div class="library_item_right_col d-flex flex-column justify-content-center ms-2">
+                        <div class="library_item_right_col d-flex flex-column justify-content-center ms-auto">
                             <button type="submit" class="library_invi_button d-inline-flex align-items-center" id="view_button" onclick="window.location.href='game.php?id=$id';">
                                 <i class="bi bi-search library_links"></i>
                                 <div class="library_text_medium library_links ms-2">View</div>
@@ -111,7 +79,7 @@ _END;
                 }
             } else {
                 echo <<<_END
-                <div class="h2 title text-center">You have not published any games yet!</div>
+                <div class="h2 title text-center">There are no games in the store... But how could it be? O.O</div>
 _END;
             } ?>
         </div>

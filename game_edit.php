@@ -140,7 +140,7 @@ _END;
                     <input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
                     <input type="file" name="image_file" <?php if (empty($image)) {
                                                                 echo "required";
-                                                            } ?> >
+                                                            } ?>>
                     <input type="hidden" name="image" value="<?php if (!empty($image)) {
                                                                     echo $image;
                                                                 } ?>">
@@ -197,7 +197,7 @@ _END;
 
             <div class="d-flex bottom_div">
                 <!-- Discard Changes Button -->
-                <button type="submit" class="btn btn-danger buttons game_edit_red_button ms-2" onclick="if (confirm('Are you sure you want to discard these changes?')){ window.location.href='index.php';}">
+                <button class="btn btn-danger buttons game_edit_red_button ms-2" onclick="if (confirm('Are you sure you want to discard these changes?')){ event.preventDefault(); window.location.href='index.php';}">
                     Discard changes
                 </button>
                 <!-- Save Changes Button -->

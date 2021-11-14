@@ -54,7 +54,7 @@ a:active{
     color: #A3F7BF;
 }
 
-.bi-pencil-square{
+.bi-pencil-square, .bi-search{
     font-size: 2em;
     color: white;
 }
