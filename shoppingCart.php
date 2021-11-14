@@ -595,16 +595,11 @@ class ShoppingCart extends DBController
      * - string $image             - The relative path to the image of the game
      * - string $min_requirements  - The HTML formated minimum requirements of the game
      * - string $rec_requirements  - The HTML formated recommended requirements of the game
-     * - int    $developerID       - The ID of the game developer
-     * 
+     *  
      * @return int[] $result       - First int is boolean representing success of the operation, second int is the gameID if successful (-1 if unsucecssful)
      */
     function editGame($gameID, $args)
     {
-        //Add into `games` table
-        $query = "UPDATE games
-        SET `gameID` = ?, `name` = ?, `description` = ?, `ageRating` = ?, `price` = ?, `image` = ?, `min_requirements` = ?, `rec_requirements` = ?, `developerID` = ?
-        WHERE gameID = ?";
         //Return false if any of the above arguments are null
         //looping through the argument array
         foreach($args as $key => $value){
@@ -619,11 +614,11 @@ class ShoppingCart extends DBController
         $image              = $args["image"];
         $min_requirements   = $args["min_req"];
         $rec_requirements   = $args["rec_req"];
-        $developerID        = $args["developerID"];
 
         //Add into `games` table
-        $query = "INSERT INTO `games` (`gameID`, `name`, `description`, `ageRating`, `price`, `image`, `min_requirements`, `rec_requirements`, `developerID`) 
-        VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "UPDATE games
+        SET `name` = ?, `description` = ?, `ageRating` = ?, `price` = ?, `image` = ?, `min_requirements` = ?, `rec_requirements` = ?
+        WHERE gameID = ?";
 
         $params = array(
             array(
@@ -653,10 +648,6 @@ class ShoppingCart extends DBController
             array(
                 "param_type" => "s",
                 "param_value" => $rec_requirements,
-            ),
-            array(
-                "param_type" => "i",
-                "param_value" => $developerID
             ),
             array(
                 "param_type" => "i",

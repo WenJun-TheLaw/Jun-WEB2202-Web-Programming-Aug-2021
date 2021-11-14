@@ -92,7 +92,7 @@ input[type=number] {
     border: none;
     border-radius: 5px;
     padding: 5px;
-    white-space: pre-wrap;
+    white-space: pre-line;
 }
 
 .bottom_div{

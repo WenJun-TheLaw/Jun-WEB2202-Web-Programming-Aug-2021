@@ -40,6 +40,10 @@ body *, .game_text{
     height: auto;
 }
 
+.game_text_areas{
+    white-space: pre-line;
+}
+
 .row{
     width: 100%;
 }

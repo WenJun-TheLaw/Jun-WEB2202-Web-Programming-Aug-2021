@@ -194,10 +194,12 @@
                                 $gameArgs["image"]       = $gameImg;
                                 $gameArgs["min_req"]     = $_POST["min_req"];
                                 $gameArgs["rec_req"]     = $_POST["rec_req"];
-                                $gameArgs["developerID"] = $_POST["developerID"];
 
                                 //Game is new
-                                if(strcasecmp($_POST["gameID"], "new") == 0){                                    //New game
+                                if(strcasecmp($_POST["gameID"], "new") == 0){
+                                    $gameArgs["developerID"] = $_POST["developerID"];
+    
+                                    //New game
                                    if($db_handle->addNewGame($gameArgs)){
                                         $msg = "Operation successful!";
                                         echo "<script type='application/javascript'>

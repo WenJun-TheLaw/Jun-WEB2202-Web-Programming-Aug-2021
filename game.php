@@ -1,21 +1,21 @@
 <?php
-    if (session_status() != PHP_SESSION_ACTIVE) {
-        session_start();
-    }
-    //Check which session variables to expire
-    function expireSessionKeys()
-    {
-        if (!is_null($_SESSION["expiries"])) {
-            foreach ($_SESSION["expiries"] as $key => $value) {
-                if (time() > $value) {
-                    unset($_SESSION[$key]);
-                }
+if (session_status() != PHP_SESSION_ACTIVE) {
+    session_start();
+}
+//Check which session variables to expire
+function expireSessionKeys()
+{
+    if (!is_null($_SESSION["expiries"])) {
+        foreach ($_SESSION["expiries"] as $key => $value) {
+            if (time() > $value) {
+                unset($_SESSION[$key]);
             }
         }
     }
-    expireSessionKeys();
-    require_once("shoppingCart.php");
-    $db_handle = new ShoppingCart();
+}
+expireSessionKeys();
+require_once("shoppingCart.php");
+$db_handle = new ShoppingCart();
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +55,7 @@
                 <!-- Left Div (30vw) -->
                 <div class="d-flex text-center flex-column game_left_content">
                     <!-- Game Image -->
-                    <img src=<?php echo $game_info[0]["image"]; ?> alt="An image of the game" class="game_img" id="game_img">
+                    <img src="<?php echo $game_info[0]["image"];?>" alt="An image of the game" class="game_img" id="game_img">
                     <!-- Game Price -->
                     <div class="textbox mt-4">
                         <div class="d-inline-flex">
@@ -78,7 +78,7 @@
                 <!-- Right Div (70vw) -->
                 <div class="d-flex flex-column game_right_content">
                     <!-- Game Description -->
-                    <div class="game_text_small" id="game_description"> <?php echo $game_info[0]["description"]; ?> </div>
+                    <div class="game_text_small game_text_areas" id="game_description"><?php echo $game_info[0]["description"]; ?></div>
                     <!-- First row (Developer & Age Rating) -->
                     <div class="row mt-4">
                         <!-- Developer -->
@@ -108,14 +108,14 @@
                         <div class="col-md mt-4">
                             <div class="d-flex flex-column">
                                 <div class="game_text_medium">Minimum Requirements&colon;&nbsp;</div>
-                                <div id="game_min_req"><?php echo $game_info[0]["min_requirements"]; ?></div>
+                                <div id="game_min_req" class="game_text_areas"><?php echo $game_info[0]["min_requirements"]; ?></div>
                             </div>
                         </div>
                         <!-- Game Recommended Requirements -->
                         <div class="col-md mt-4">
                             <div class="d-flex flex-column">
                                 <div class="game_text_medium">Recommended Requirements&colon;&nbsp;</div>
-                                <div id="game_rec_req"><?php echo $game_info[0]["rec_requirements"]; ?></div>
+                                <div id="game_rec_req" class="game_text_areas"><?php echo $game_info[0]["rec_requirements"]; ?></div>
                             </div>
                         </div>
                     </div>
