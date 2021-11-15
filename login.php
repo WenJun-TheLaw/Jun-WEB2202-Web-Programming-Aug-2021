@@ -65,7 +65,7 @@ if (isset($_SESSION['userID'])) {
         if (!is_null($user_result)) {
 
             //Verifiying credentials [PASSWORD]
-            $password = (string)$_POST['password'];
+            $password = sanitizeString($_POST['password']);
             $password_hashed = $user_result[0]['password'];
 
             //If passwords match

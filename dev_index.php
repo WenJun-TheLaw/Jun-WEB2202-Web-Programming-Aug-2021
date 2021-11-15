@@ -59,8 +59,12 @@ $dev = $db_handle->findDeveloper($_SESSION["userID"]);
 $accountStatus = $dev[0]["verified"];
 if ($accountStatus == 1) {
     $accountStatusText = "Verified";
-} else {
+} 
+elseif ($accountStatus == 0){
     $accountStatusText = "Pending verification...";
+}
+elseif ($accountStatus == -1){
+    $accountStatusText = "Application Rejected";
 }
 ?>
 

@@ -683,5 +683,48 @@ class ShoppingCart extends DBController
         $listResult = $this->getDBResult($query, $params);
         return $listResult;
     }
+    /**
+     * Returns all the `developers` that are pending verification
+     * 
+     * @return $devResult  An array of developers
+     */
+    function getDeveloperApplications()
+    {
+        $query = "SELECT developer.* FROM developer WHERE verified = 0";
 
+        $devResult = $this->getDBResult($query);
+        return $devResult;
+    }
+    /**
+     * Modifies a `developer`'s verification status
+     * 
+     * @param  int  $developerID   The ID of the developer
+     * @param  int  $verification  1 - Verified, -1 - Rejected
+     * 
+     * @return bool $success       Whether the operatio succeeded
+     */
+    function updateDevVerification($developerID, $verification)
+    {
+        if($verification == 0 || $verification == -1){
+            $query = "UPDATE developer SET `verified` = ? WHERE `developerID` = ?";
+
+            $params = array(
+                array(
+                    "param_type" => "i",
+                    "param_value" => $verification
+                ),
+                array(
+                    "param_type" => "i",
+                    "param_value" => $developerID
+                )
+            );
+
+            $this->updateDB($query, $params);
+            return true;
+        }
+        else{
+            return false;
+        }
+        
+    }
 }

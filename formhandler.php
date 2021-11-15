@@ -87,9 +87,9 @@
                             
                         break;
 
-                            unset($_POST["action"]);
-                            unset($_POST["gameID"]);
-                            header("Refresh:0");
+                        unset($_POST["action"]);
+                        unset($_POST["gameID"]);
+                        header("Refresh:0");
                     }
                 }
                 break;

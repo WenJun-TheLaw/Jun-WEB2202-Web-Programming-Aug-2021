@@ -76,9 +76,7 @@ if (isset($_SESSION["userID"])) {
                             <div class="game_name">' . $name . '</div>
                         </a>
                     </div>
-                    ');
-                $total_games_displayed++;
-            }
+                    ');            }
             ?>
         </div>
         <!-- Top Sellers Title-->
@@ -101,9 +99,7 @@ if (isset($_SESSION["userID"])) {
                                 <div class="game_name">' . $name . '</div>
                             </a>
                         </div>
-                        ');
-                $total_games_displayed++;
-            }
+                        ');            }
             ?>
         </div>
         <!-- See More Games Row -->
