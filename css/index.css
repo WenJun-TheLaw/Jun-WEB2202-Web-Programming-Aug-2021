@@ -1,6 +1,5 @@
 body{
     background-color: #191D21;
-    height: 100vh;
     margin: 0;
     display:flex; 
     flex-direction:column; 
@@ -29,6 +28,16 @@ a:active{
 
 .game_name:hover{
     color: #29A19C;
+}
+
+.game_text{
+    color: #A3F7BF;
+    font-size: 1.7em;
+    font-family: 'Red Hat Display', sans-serif;
+}
+
+.game_name_big{
+    font-size: 1.7em;
 }
 
 

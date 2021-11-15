@@ -1,0 +1,80 @@
+body{
+    background-color: #191D21;
+    margin: 0;
+    display:flex; 
+    flex-direction:column; 
+}
+
+.application_body{
+    min-height: 55vh;
+}
+
+.title{
+    color: #A3F7BF;
+    font-size: 2.5em;
+    font-family: 'Red Hat Display', sans-serif;
+    margin: 3vh 0;
+}
+
+.application_row{
+    background-color: #435055;
+    border-radius: 20px;
+}
+
+.left_div{
+    width: 50%;
+}
+
+.left_col{
+    width: fit-content;
+}
+
+.application_text_medium{
+    color: #A3F7BF;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 1.5em;
+}
+
+.application_text_large{
+    color: #A3F7BF;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 1.7em;
+}
+
+
+.application_invi_button{
+    background: transparent no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    box-shadow: none;
+    -webkit-box-shadow: none; 
+    -moz-box-shadow: none;
+}
+
+.application_invi_button:hover .application_links {
+    color: #A3F7BF;
+}
+
+.bi-check-lg, .bi-x-lg{
+    font-size: 2em;
+    color: white;
+}
+
+.application_links{
+    color: white;
+}
+
+
+
+
+/*If screen width >768px, same as md on Bootstrap 5*/
+@media (min-width: 768px){
+
+}
+
+/*If screen width <768px, same as md on Bootstrap 5*/
+@media (max-width: 768px){
+
+}

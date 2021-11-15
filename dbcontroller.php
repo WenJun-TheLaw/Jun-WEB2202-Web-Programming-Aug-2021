@@ -26,7 +26,7 @@ class DBController
 			mysqli_select_db($this->conn,$this->database);
 				
 			//SQL Source file
-			$sqlSource = file_get_contents('egg_with_data.sql');
+			$sqlSource = file_get_contents('egg.sql');
 			mysqli_multi_query($this->conn, $sqlSource);
 
 			$msg = "Database not found, but we created it for you!";

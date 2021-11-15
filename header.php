@@ -20,6 +20,37 @@
         color: #a3f7bf;
         font-family: 'Red Hat Display', sans-serif;
     }
+
+    .dropdown {
+        width: max-content;
+    }
+
+    .header_invi_button {
+        width: max-content;
+        background: transparent no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+    }
+
+    .dropdown-menu-end {
+        right: 0;
+        left: auto;
+        padding: 10px;
+        background-color: #435055;
+    }
+
+    .header_link {
+        color: white;
+    }
+
+    .header_link:hover {
+        color: #29A19C;
+    }
 </style>
 
 <header>
@@ -37,10 +68,58 @@
             //Find user name
             $user = $db_handle->findUserByID($_SESSION["userID"]);
             $username = $user[0]['name'];
-            echo <<<_END
-                <div class="header_text ms-auto">Welcome,&nbsp;</div>
-                <div class="header_text me-2">$username</div>
-            _END;
+
+            //User type = "Gamer"
+            //Dropdown menu shows "Cart" , "Library" & "Logout"
+            if(strcasecmp($user[0]["userType"], "Gamer") == 0){
+                echo <<<_END
+                <div class="dropdown ms-auto">
+                    <button class="dropdown-toggle header_invi_button d-inline-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="header_text ">Welcome,&nbsp;</div>
+                        <div class="header_text me-2">$username</div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item header_link p-2" href="cart.php">Cart</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="library.php">Library</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="formhandler.php?source=header&action=logout">Logout</a></li>
+                    </ul>
+                </div>
+_END;
+            }
+            //User type == "Developer"
+            //Dropdown menu shows "Manage Games" & "Logout"
+            elseif(strcasecmp($user[0]["userType"], "Developer") == 0){
+                echo <<<_END
+                <div class="dropdown ms-auto">
+                    <button class="dropdown-toggle header_invi_button d-inline-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="header_text ">Welcome,&nbsp;</div>
+                        <div class="header_text me-2">$username</div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item header_link p-2" href="game_edit_list.php">Manage Games</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="formhandler.php?source=header&action=logout">Logout</a></li>
+                    </ul>
+                </div>
+_END;
+            }
+            //User type == "Admin"
+            //Dropdown menu shows "Manage Games", "Manage Applications" & "Logout"
+            elseif (strcasecmp($user[0]["userType"], "Admin") == 0) {
+                echo <<<_END
+                <div class="dropdown ms-auto">
+                    <button class="dropdown-toggle header_invi_button d-inline-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="header_text ">Welcome,&nbsp;</div>
+                        <div class="header_text me-2">$username</div>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item header_link p-2" href="game_edit_list.php">Manage Games</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="manageApplications.php">Manage Applications</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="formhandler.php?source=header&action=logout">Logout</a></li>
+                    </ul>
+                </div>
+_END;
+            }
+
         }
         //User isn't logged in
         else {
@@ -58,8 +137,7 @@
                     </button>
                 </a>
             _END;
-
         } ?>
-        
+
     </div>
 </header>
