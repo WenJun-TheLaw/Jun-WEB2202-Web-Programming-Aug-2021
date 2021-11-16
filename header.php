@@ -81,6 +81,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li><a class="dropdown-item header_link p-2" href="cart.php">Cart</a></li>
                         <li><a class="dropdown-item header_link p-2" href="library.php">Library</a></li>
+                        <li><a class="dropdown-item header_link p-2" href="ads.php">Advertisements</a></li>
                         <li><a class="dropdown-item header_link p-2" href="formhandler.php?source=header&action=logout">Logout</a></li>
                     </ul>
                 </div>

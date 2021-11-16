@@ -1,0 +1,51 @@
+body{
+    background-color: #191D21;
+    margin: 0;
+    display:flex; 
+    flex-direction:column; 
+}
+
+.title{
+    color: #A3F7BF;
+    font-size: 2.5em;
+    font-family: 'Red Hat Display', sans-serif;
+}
+
+.ads_body{
+    min-height: 55vh;
+}
+
+.left_col{
+    width: 70%;
+    min-height: fit-content;
+}
+
+.right_col{
+    width: 30%;
+}
+
+.ad_text_small{
+    color: #A3F7BF;
+    font-family: 'Red Hat Display', sans-serif;
+}
+
+.ad_text_medium{
+    color: #A3F7BF;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 1.5em;
+}
+
+.ad_text_large{
+    color: #A3F7BF;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 1.7em;
+}
+/*If screen width >768px, same as md on Bootstrap 5*/
+@media (min-width: 768px){
+   
+}
+
+/*If screen width <768px, same as md on Bootstrap 5*/
+@media (max-width: 768px){
+   
+}
