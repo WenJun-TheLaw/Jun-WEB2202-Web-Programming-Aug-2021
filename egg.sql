@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 14, 2021 at 09:34 AM
+-- Generation Time: Nov 16, 2021 at 01:47 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -16,6 +16,30 @@ SET time_zone = "+00:00";
 --
 -- Database: `egg`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `advertisement`
+--
+
+CREATE TABLE `advertisement` (
+  `adsID` int(10) NOT NULL,
+  `adsPayout` int(10) NOT NULL,
+  `adsLink` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `advertisement`
+--
+
+INSERT INTO `advertisement` (`adsID`, `adsPayout`, `adsLink`) VALUES
+(1, 200, 'X5aJfebzkrM'),
+(2, 300, 'M9FGaan35s0'),
+(3, 200, 'FYH9n37B7Yw'),
+(4, 150, 'VNd7tpPzmzE'),
+(5, 100, 'edVYXynxzio'),
+(6, 450, 'ehjJ614QfeM');
 
 -- --------------------------------------------------------
 
@@ -62,15 +86,18 @@ INSERT INTO `developer` (`developerID`, `revenue`, `verified`, `companySSN`) VAL
 
 CREATE TABLE `gamer` (
   `userID` int(11) NOT NULL,
-  `currency` int(11) NOT NULL
+  `currency` int(11) NOT NULL,
+  `earnings` int(11) NOT NULL,
+  `lastEarning` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `currentAdIndex` int(10) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `gamer`
 --
 
-INSERT INTO `gamer` (`userID`, `currency`) VALUES
-(8, 0);
+INSERT INTO `gamer` (`userID`, `currency`, `earnings`, `lastEarning`, `currentAdIndex`) VALUES
+(8, 800, 800, '2021-11-16 09:46:05', 4);
 
 -- --------------------------------------------------------
 
@@ -116,6 +143,14 @@ CREATE TABLE `library` (
   `gameID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `library`
+--
+
+INSERT INTO `library` (`userID`, `gameID`) VALUES
+(8, 2),
+(8, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -142,12 +177,18 @@ INSERT INTO `user` (`userID`, `email`, `password`, `name`, `userType`) VALUES
 (5, 'mojang@test.com', '$2y$10$JiTqypQxzdN8vO3Vqv/tjO77DXndWOWveOKWSObbOV8FmQkygm8fq', 'Mojang', 'Developer'),
 (6, 'undead_labs@test.com', '$2y$10$05u/8ygiw/No9BG.3r6J9.v5z/yozR.lIzJBFGDiqhA0XhH0RNw7S', 'Undead Labs', 'Developer'),
 (7, 'cd@test.com', '$2y$10$2N0X9K0T0GoO2oir0Z/Zz.KQOYmXqTjtNl2XJ1YhozW3DUKZ/9VuW', 'CD PROJEKT RED', 'Developer'),
-(8, 'testuser@user.com', '$2y$10$QOSw/Uhz8qWe2zOPDHkE3OCQuKf95jRULluftZuJ9K72Esm/TKd.W', 'Test User', 'Gamer'),
+(8, 'user@user.com', '$2y$10$QOSw/Uhz8qWe2zOPDHkE3OCQuKf95jRULluftZuJ9K72Esm/TKd.W', 'Test User', 'Gamer'),
 (9, 'admin@admin.com', '$2y$10$8S8VR9qymLRlWU9vu6F8hO0xsq0cTWgmwuDYLRPVEcNSV1lui/jYm', 'Test Admin', 'Admin');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `advertisement`
+--
+ALTER TABLE `advertisement`
+  ADD PRIMARY KEY (`adsID`);
 
 --
 -- Indexes for table `cart`
@@ -167,7 +208,8 @@ ALTER TABLE `developer`
 -- Indexes for table `gamer`
 --
 ALTER TABLE `gamer`
-  ADD PRIMARY KEY (`userID`);
+  ADD PRIMARY KEY (`userID`),
+  ADD KEY `currentAdIndex` (`currentAdIndex`);
 
 --
 -- Indexes for table `games`
@@ -195,6 +237,12 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `advertisement`
+--
+ALTER TABLE `advertisement`
+  MODIFY `adsID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT for table `games`
 --
 ALTER TABLE `games`
@@ -204,7 +252,7 @@ ALTER TABLE `games`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Constraints for dumped tables
@@ -227,7 +275,8 @@ ALTER TABLE `developer`
 -- Constraints for table `gamer`
 --
 ALTER TABLE `gamer`
-  ADD CONSTRAINT `gamer_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`);
+  ADD CONSTRAINT `gamer_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
+  ADD CONSTRAINT `gamer_ibfk_2` FOREIGN KEY (`currentAdIndex`) REFERENCES `advertisement` (`adsID`);
 
 --
 -- Constraints for table `games`

@@ -402,9 +402,11 @@ class ShoppingCart extends DBController
             //Get ID of the new user
             $user = $this->findUserByEmail($email);
             $userID = $user[0]['userID'];
+            date_default_timezone_set("Asia/Kuala_Lumpur");
+            $time = date('Y-m-d H:i:s');
 
-            $query = "INSERT INTO gamer (userID, currency)
-                VALUES (?, ?)";
+            $query = "INSERT INTO gamer (userID, currency, earnings, lastEarning)
+                VALUES (?, ?, ?, ?)";
 
             $params = array(
                 array(
@@ -414,6 +416,14 @@ class ShoppingCart extends DBController
                 array(
                     "param_type" => "i",
                     "param_value" => 0
+                ),
+                array(
+                    "param_type" => "i",
+                    "param_value" => 0
+                ),
+                array(
+                    "param_type" => "s",
+                    "param_value" => $time
                 )
             );
 
@@ -705,7 +715,7 @@ class ShoppingCart extends DBController
      */
     function updateDevVerification($developerID, $verification)
     {
-        if($verification == 0 || $verification == -1){
+        if($verification == 1 || $verification == -1){
             $query = "UPDATE developer SET `verified` = ? WHERE `developerID` = ?";
 
             $params = array(
@@ -725,6 +735,158 @@ class ShoppingCart extends DBController
         else{
             return false;
         }
+    }
+    /**
+     * Returns all `advertisement` from the `advertisement` list
+     * 
+     * @return $adsResult  An array containing the ad (could return `null`)
+     */
+    function getAds()
+    {
+        $query = "SELECT * FROM advertisement";
+
+        $adsResult = $this->getDBResult($query);
+        return $adsResult;
+    }
+    /**
+     * Paysout earnings to a `gamer`
+     * 
+     * @param int $gamerID      The ID of the gamer being paid
+     * @param int $payout       The amount being paid
+     * @param bool $quota       Whether the user exceeded quota for the day
+     * 
+     * @return bool $success    Whether the operation succeded
+     */
+    function payOut($gamerID, $payout, $quota)
+    {
+        $gamer = $this->findGamer($gamerID);
+        //User exists
+        if(!is_null($gamer)){
+            $currency = $gamer[0]["currency"] + $payout;
+            $earnings = $gamer[0]["earnings"] + $payout;
+            //User did not exceed quota
+            //We do not need to update lastEarning
+            if(!$quota){
+                $query = "UPDATE gamer SET currency = ? , earnings = ? WHERE userID = ?";
+                $params = array(
+                    array(
+                        "param_type" => "i",
+                        "param_value" => $currency
+                    ),
+                    array(
+                        "param_type" => "i",
+                        "param_value" => $earnings
+                    ),
+                    array(
+                        "param_type" => "i",
+                        "param_value" => $gamerID
+                    )
+                );
+
+                $this->updateDB($query, $params);
+                return true;
+            }
+            //If user exceeded quota
+            //We need to set lastEarning as now
+            else{
+                date_default_timezone_set("Asia/Kuala_Lumpur");
+                $time = date('Y-m-d H:i:s');
+                $currency = $gamer[0]["currency"] + $payout;
+                $earnings = $gamer[0]["earnings"] + $payout;
+                $query = "UPDATE gamer SET currency = ? , earnings = ? , lastEarning = ?  WHERE userID = ?";
+                $params = array(
+                    array(
+                        "param_type" => "i",
+                        "param_value" => $currency
+                    ),
+                    array(
+                        "param_type" => "i",
+                        "param_value" => $earnings
+                    ),
+                    array(
+                        "param_type" => "s",
+                        "param_value" => $time
+                    ),
+                    array(
+                        "param_type" => "i",
+                        "param_value" => $gamerID
+                    )
+                );
+
+                $this->updateDB($query, $params);
+                return true;
+            }
+           
+        }
+        //User does not exist
+        else{
+            return false;
+        }
         
+    }
+    /**
+     * Finds a `gamer` from the `gamer` and `user` table
+     * 
+     * @param int $gamerID   The ID of the gamer being searched
+     * @return $gamerResult  An array containing the gamer (could return `null`)
+     */
+    function findGamer($gamerID)
+    {
+        $query = "SELECT * FROM gamer WHERE userID = ?";
+
+        $params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $gamerID
+            )
+        );
+
+        $gamerResult = $this->getDBResult($query, $params);
+        return $gamerResult;
+    }
+    /**
+     * Sets a `gamer`'s current Advertisement Index
+     * 
+     * @param  int  $gamerID   The ID of the gamer
+     * @param  int  $adIndex   The index of the ads
+     * 
+     */
+    function setGamerAdIndex($gamerID, $adIndex)
+    {
+
+        $query = "UPDATE gamer SET `currentAdIndex` = ? WHERE `userID` = ?";
+
+        $params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $adIndex
+            ),
+            array(
+                "param_type" => "i",
+                "param_value" => $gamerID
+            )
+        );
+
+        $this->updateDB($query, $params);
+    }
+    /**
+     * Sets a `gamer`'s current earnings to 0
+     * 
+     * @param  int  $gamerID   The ID of the gamer
+     * 
+     */
+    function resetGamerEarnings($gamerID)
+    {
+
+        $query = "UPDATE gamer SET `earnings` = 0 WHERE `userID` = ?";
+
+        $params = array(
+            array(
+                "param_type" => "i",
+                "param_value" => $gamerID
+            )
+        );
+
+        $this->updateDB($query, $params);
     }
 }
